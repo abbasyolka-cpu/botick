@@ -192,7 +192,7 @@ h1{font-family:var(--display);font-weight:800;font-size:22px;line-height:1.1;mar
 <script>
 (function(){
 const tg = window.Telegram && window.Telegram.WebApp;
-const inTg = !!(tg && tg.initData);
+const inTg = !!(tg && tg.platform && tg.platform !== "unknown");
 const ROOMS=[{id:"tv",name:"Творческая",em:"🎨"},{id:"st",name:"СтСка",em:"🪚"}];
 const WD=["вс","пн","вт","ср","чт","пт","сб"];
 const MG=["января","февраля","марта","апреля","мая","июня","июля","августа","сентября","октября","ноября","декабря"];
