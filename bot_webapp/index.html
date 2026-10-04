@@ -59,12 +59,17 @@ h1{font-family:var(--display);font-weight:800;font-size:25px;line-height:1.08;ma
 .demo{margin-top:12px;font-size:12.5px;color:var(--hint);background:var(--surface);border:1px dashed var(--line);border-radius:12px;padding:9px 11px}
 
 /* ── логотип-ключик ── */
-.brandrow{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
+.brandrow{position:relative;z-index:6;display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
 .logo{display:block;width:96px;height:39px;overflow:visible;border-radius:10px}
 .logo svg{display:block;width:100%;height:100%;overflow:visible;filter:drop-shadow(0 0 8px color-mix(in srgb,var(--a1) 55%,transparent))}
 .ink{fill:url(#keyGrad)}
 .keystop1{stop-color:var(--a1)} .keystop2{stop-color:var(--a2)}
 .shine{fill:url(#shineGrad)}
+.bubble{position:absolute;left:4px;top:50px;max-width:250px;padding:9px 13px;border-radius:14px;font-size:13.5px;line-height:1.3;color:#fff;
+  background:linear-gradient(120deg,color-mix(in srgb,var(--a1) 85%,#000),color-mix(in srgb,var(--a2) 80%,#000));box-shadow:0 6px 20px -4px color-mix(in srgb,var(--a1) 60%,transparent);
+  transform-origin:22px -8px;transform:scale(.4);opacity:0;pointer-events:none;transition:transform .35s cubic-bezier(.3,1.5,.5,1),opacity .2s}
+.bubble::before{content:"";position:absolute;left:16px;top:-6px;width:12px;height:12px;border-radius:2px;transform:rotate(45deg);background:color-mix(in srgb,var(--a1) 85%,#000)}
+.bubble.on{transform:none;opacity:1}
 .fallkey{position:fixed;top:-40px;z-index:30;pointer-events:none;width:44px;height:18px}
 .fallkey svg{width:100%;height:100%;display:block;overflow:visible}
 .empty .mini{display:block;width:84px;height:34px;margin:0 auto 12px}
@@ -221,8 +226,14 @@ h1{font-family:var(--display);font-weight:800;font-size:25px;line-height:1.08;ma
   @keyframes float{50%{transform:translateY(-3px)}}
   .logo svg{animation:wink 9s ease-in-out infinite;transform-origin:21% 50%}
   @keyframes wink{0%,88%,100%{transform:none}91%{transform:rotate(-7deg)}94%{transform:rotate(5deg)}97%{transform:rotate(-2deg)}}
-  .logo.turn svg{animation:turn .9s cubic-bezier(.3,.7,.2,1)}
-  @keyframes turn{0%{transform:none}25%{transform:translateX(10px)}60%{transform:translateX(10px) perspective(300px) rotateX(180deg)}85%{transform:translateX(10px) perspective(300px) rotateX(360deg)}100%{transform:none}}
+  .logo.turn svg{animation:unlock .85s linear both;transform-origin:50% 50%}
+  @keyframes unlock{
+    0%{transform:perspective(600px) rotateX(0) scale(1);animation-timing-function:cubic-bezier(.3,0,.6,1)}
+    14%{transform:perspective(600px) rotateX(0) scale(.92);animation-timing-function:cubic-bezier(.5,0,.3,1)}
+    46%{transform:perspective(600px) rotateX(-78deg) scale(1.03);filter:drop-shadow(0 0 8px color-mix(in srgb,var(--a1) 55%,transparent)) brightness(1)}
+    58%{transform:perspective(600px) rotateX(-78deg) scale(1.03);filter:drop-shadow(0 0 16px var(--a1)) brightness(1.4);animation-timing-function:cubic-bezier(.3,1.5,.5,1)}
+    80%{transform:perspective(600px) rotateX(0) scale(1.07);filter:drop-shadow(0 0 12px var(--a1)) brightness(1.15)}
+    100%{transform:perspective(600px) rotateX(0) scale(1)}}
   .shine{animation:shine 4.5s ease-in-out infinite}
   @keyframes shine{0%,55%{transform:translateX(0)}85%,100%{transform:translateX(1500px)}}
   .empty .mini{animation:float 3s ease-in-out infinite}
@@ -258,6 +269,7 @@ h1{font-family:var(--display);font-weight:800;font-size:25px;line-height:1.08;ma
 <main class="wrap">
   <div class="brandrow">
     <button class="logo" id="logo" aria-label="Наш ключик — нажми!"><svg viewBox="0 0 885 354"><use href="#keyPath" class="ink"/><g clip-path="url(#keyClip)"><rect class="shine" x="-420" y="-40" width="220" height="440" transform="skewX(-20)"/></g></svg></button>
+    <div class="bubble" id="bubble" role="status"></div>
     <button class="refresh" id="refresh" aria-label="Обновить расписание"><span class="ar">↻</span> Обновить</button>
   </div>
   <div class="top">
@@ -559,6 +571,8 @@ if(inTg){try{tg.MainButton.onClick(book)}catch(e){}}
 
 /* ---------- ключик: пасхалки ---------- */
 const KEY_LINES=["Щёлк! Комната открыта 🔓","Творчество разблокировано ✨","Ключик говорит: «привет!» 👋","Без ключика — никуда 🗝","Ещё чуть-чуть, и откроется что-то секретное…","Вдохновение: 100% 💥","Кто-то сегодня явно сделает шедевр 🎨","Пилим, клеим, творим 🪚"];
+function say(t){const b=document.getElementById("bubble");b.textContent=t;b.classList.remove("on");void b.offsetWidth;b.classList.add("on");
+  clearTimeout(say.t);say.t=setTimeout(()=>b.classList.remove("on"),2300)}
 let keyTaps=0,keyTimer=0,lineIdx=Math.floor(Math.random()*KEY_LINES.length);
 function keyRain(){
   if(reduce)return;
@@ -574,10 +588,13 @@ function keyRain(){
 }
 document.getElementById("logo").onclick=e=>{
   const lg=e.currentTarget;lg.classList.remove("turn");void lg.offsetWidth;lg.classList.add("turn");
-  const r=lg.getBoundingClientRect();burst(r.left+r.width*.75,r.top+r.height/2);
+  clearTimeout(lg.t);lg.t=setTimeout(()=>{   // «щелчок» замка — в момент, когда ключ довернулся
+    const r=lg.getBoundingClientRect();burst(r.left+r.width*.21,r.top+r.height/2);
+    try{tg&&tg.HapticFeedback&&tg.HapticFeedback.impactOccurred("rigid")}catch(_){}
+  },400);
   keyTaps++;clearTimeout(keyTimer);keyTimer=setTimeout(()=>keyTaps=0,2500);
-  if(keyTaps>=7){keyTaps=0;keyRain();haptic("success");toast("Секретный ключепад! 🗝🗝🗝");return}
-  haptic("sel");toast(KEY_LINES[lineIdx++%KEY_LINES.length]);
+  if(keyTaps>=7){keyTaps=0;keyRain();haptic("success");say("Секретный ключепад! 🗝🗝🗝");return}
+  haptic("sel");say(KEY_LINES[lineIdx++%KEY_LINES.length]);
 };
 
 applyTheme();
