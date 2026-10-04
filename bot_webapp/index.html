@@ -61,9 +61,9 @@ h1{font-family:var(--display);font-weight:800;font-size:25px;line-height:1.08;ma
 /* ── вкладки со скользящим индикатором ── */
 .tabs{position:relative;display:flex;margin-top:16px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:4px}
 .tabs::before{content:"";position:absolute;top:4px;bottom:4px;left:4px;width:calc(50% - 4px);border-radius:10px;background:var(--grad);box-shadow:var(--glow);
-  transition:transform .45s var(--ease),background .5s}
+  transition:transform .25s cubic-bezier(.3,.7,.3,1),background .5s}
 .tabs[data-t="mine"]::before{transform:translateX(100%)}
-.tabs button{position:relative;z-index:1;flex:1;padding:9px 6px;border-radius:10px;font-weight:600;font-size:14px;color:var(--hint);transition:color .3s}
+.tabs button{position:relative;z-index:1;flex:1;padding:9px 6px;border-radius:10px;font-weight:600;font-size:14px;color:var(--hint);transition:color .15s}
 .tabs button[aria-selected="true"]{color:#fff;text-shadow:0 1px 6px rgba(0,0,0,.35)}
 .tabs .cnt{font-family:var(--mono);font-size:11px;margin-left:5px;padding:1px 6px;border-radius:999px;background:rgba(255,255,255,.18)}
 .tabs .cnt:empty{display:none}
@@ -207,7 +207,9 @@ h1{font-family:var(--display);font-weight:800;font-size:25px;line-height:1.08;ma
   .refresh:active .ar{transition:transform .5s var(--ease);transform:rotate(-360deg)}
   .room:active,.day:active{transform:scale(.94)}
   .slot:active:not(.busy):not(.past){transform:scale(.97)}
-  .tl.enter .row,.list.enter .bk,.rooms.enter .room{animation:rise .55s var(--ease) both;animation-delay:calc(var(--i,0) * 35ms)}
+  .rooms.enter .room{animation:rise .55s var(--ease) both;animation-delay:calc(var(--i,0) * 35ms)}
+  .tl.enter,.list.enter{animation:fade .16s ease-out both}
+  @keyframes fade{from{opacity:.35}}
   @keyframes rise{from{opacity:0;transform:translateY(12px)}}
   .days.enter .day{animation:pop .5s var(--ease) both;animation-delay:calc(var(--i,0) * 40ms)}
   @keyframes pop{from{opacity:0;transform:scale(.6)}}
