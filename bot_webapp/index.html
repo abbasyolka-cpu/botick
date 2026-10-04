@@ -58,6 +58,19 @@ h1{font-family:var(--display);font-weight:800;font-size:25px;line-height:1.08;ma
 .refresh .ar{display:inline-block}
 .demo{margin-top:12px;font-size:12.5px;color:var(--hint);background:var(--surface);border:1px dashed var(--line);border-radius:12px;padding:9px 11px}
 
+/* ── логотип-ключик ── */
+.brandrow{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
+.logo{display:block;width:96px;height:39px;overflow:visible;border-radius:10px}
+.logo svg{display:block;width:100%;height:100%;overflow:visible;filter:drop-shadow(0 0 8px color-mix(in srgb,var(--a1) 55%,transparent))}
+.ink{fill:url(#keyGrad)}
+.keystop1{stop-color:var(--a1)} .keystop2{stop-color:var(--a2)}
+.shine{fill:url(#shineGrad)}
+.fallkey{position:fixed;top:-40px;z-index:30;pointer-events:none;width:44px;height:18px}
+.fallkey svg{width:100%;height:100%;display:block;overflow:visible}
+.empty .mini{display:block;width:84px;height:34px;margin:0 auto 12px}
+.empty .mini svg{width:100%;height:100%;overflow:visible;filter:drop-shadow(0 0 10px color-mix(in srgb,var(--a1) 60%,transparent))}
+.empty b{display:block;color:var(--fg);font-family:var(--display);font-weight:600;font-size:15px;margin-bottom:4px}
+
 /* ── вкладки со скользящим индикатором ── */
 .tabs{position:relative;display:flex;margin-top:16px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:4px}
 .tabs::before{content:"";position:absolute;top:4px;bottom:4px;left:4px;width:calc(50% - 4px);border-radius:10px;background:var(--grad);box-shadow:var(--glow);
@@ -177,7 +190,7 @@ h1{font-family:var(--display);font-weight:800;font-size:25px;line-height:1.08;ma
 
 .toast{position:fixed;left:50%;top:calc(12px + env(safe-area-inset-top,0px));transform:translate(-50%,-160%) scale(.9);z-index:9;
   background:rgba(24,14,40,.85);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);color:var(--fg);border:1px solid color-mix(in srgb,var(--a1) 60%,transparent);
-  box-shadow:0 0 18px color-mix(in srgb,var(--a1) 40%,transparent);padding:10px 16px;border-radius:999px;font-size:13.5px;max-width:calc(100% - 32px);
+  box-shadow:0 0 18px color-mix(in srgb,var(--a1) 40%,transparent);padding:10px 16px;border-radius:999px;font-size:13.5px;width:max-content;max-width:calc(100% - 32px);text-align:center;
   transition:transform .45s var(--ease)}
 .toast.on{transform:translate(-50%,0) scale(1)}
 
@@ -204,6 +217,16 @@ h1{font-family:var(--display);font-weight:800;font-size:25px;line-height:1.08;ma
   .go{animation:flow 3s linear infinite}
   @keyframes flow{to{background-position:200% 0}}
   .slot.mine .ic{display:inline-block;animation:bob 2.6s ease-in-out infinite}
+  .logo{animation:float 4s ease-in-out infinite}
+  @keyframes float{50%{transform:translateY(-3px)}}
+  .logo svg{animation:wink 9s ease-in-out infinite;transform-origin:21% 50%}
+  @keyframes wink{0%,88%,100%{transform:none}91%{transform:rotate(-7deg)}94%{transform:rotate(5deg)}97%{transform:rotate(-2deg)}}
+  .logo.turn svg{animation:turn .9s cubic-bezier(.3,.7,.2,1)}
+  @keyframes turn{0%{transform:none}25%{transform:translateX(10px)}60%{transform:translateX(10px) perspective(300px) rotateX(180deg)}85%{transform:translateX(10px) perspective(300px) rotateX(360deg)}100%{transform:none}}
+  .shine{animation:shine 4.5s ease-in-out infinite}
+  @keyframes shine{0%,55%{transform:translateX(0)}85%,100%{transform:translateX(1500px)}}
+  .empty .mini{animation:float 3s ease-in-out infinite}
+  .empty .mini svg{animation:wink 6s ease-in-out infinite;transform-origin:21% 50%}
   .refresh:active .ar{transition:transform .5s var(--ease);transform:rotate(-360deg)}
   .room:active,.day:active{transform:scale(.94)}
   .slot:active:not(.busy):not(.past){transform:scale(.97)}
@@ -222,15 +245,26 @@ h1{font-family:var(--display);font-weight:800;font-size:25px;line-height:1.08;ma
 </style>
 </head>
 <body data-room="tv">
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <linearGradient id="keyGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" class="keystop1"/><stop offset="1" class="keystop2"/></linearGradient>
+    <linearGradient id="shineGrad" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff" stop-opacity=".75"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+    <path id="keyPath" fill-rule="evenodd" d="M186,0C62,0 0,64 0,177C0,290 62,354 186,354C292,354 356,300 372,226H539V320H627V236L668,320H708L748,236V320H837V226H885V131H722L688,204L655,131H372C356,54 292,0 186,0ZM177,131H199Q233,131 233,165V185Q233,219 199,219H177Q143,219 143,185V165Q143,131 177,131Z"/>
+    <clipPath id="keyClip"><use href="#keyPath"/></clipPath>
+  </defs>
+</svg>
 <div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div>
 <div class="grid" aria-hidden="true"></div>
 <main class="wrap">
+  <div class="brandrow">
+    <button class="logo" id="logo" aria-label="Наш ключик — нажми!"><svg viewBox="0 0 885 354"><use href="#keyPath" class="ink"/><g clip-path="url(#keyClip)"><rect class="shine" x="-420" y="-40" width="220" height="440" transform="skewX(-20)"/></g></svg></button>
+    <button class="refresh" id="refresh" aria-label="Обновить расписание"><span class="ar">↻</span> Обновить</button>
+  </div>
   <div class="top">
     <div>
       <div class="eyebrow" id="stamp">Студгородок</div>
       <h1>Творческая комната</h1>
     </div>
-    <button class="refresh" id="refresh" aria-label="Обновить расписание"><span class="ar">↻</span> Обновить</button>
   </div>
   <div class="demo" id="demo" hidden>Это пример с выдуманными записями. Настоящее расписание появится, если открыть календарь кнопкой в боте.</div>
 
@@ -483,7 +517,7 @@ function renderMine(){
   const mine=B.filter(b=>b.me&&!(b.d===0&&b.e<=D.h)).sort((a,b)=>a.d-b.d||a.s-b.s);
   document.getElementById("mineCnt").textContent=mine.length?mine.length:"";
   const el=document.getElementById("mineList");el.textContent="";
-  if(!mine.length){el.innerHTML='<div class="empty"><span class="big">✨</span>У вас пока нет записей на ближайшие дни.<br>Выберите время во вкладке «Расписание».</div>';return}
+  if(!mine.length){el.innerHTML='<div class="empty"><span class="mini"><svg viewBox="0 0 885 354"><use href="#keyPath" class="ink"/></svg></span><b>Ключик скучает без дела</b>Записей на ближайшие дни пока нет.<br>Выберите время во вкладке «Расписание» — и он откроет вам комнату 🗝</div>';return}
   const list=document.createElement("div");list.className="list"+(A.mine?" enter":"");
   mine.forEach((b,i)=>{
     const r=ROOMS[b.r],d=dayDate(b.d),rel=b.d===0?"Сегодня":b.d===1?"Завтра":WD[d.getDay()].replace(/^./,c=>c.toUpperCase());
@@ -522,6 +556,29 @@ document.getElementById("sShare").onclick=()=>{const rg=range();if(rg&&rangeHasS
 document.getElementById("sGo").onclick=book;
 document.getElementById("refresh").onclick=()=>send({a:"refresh"});
 if(inTg){try{tg.MainButton.onClick(book)}catch(e){}}
+
+/* ---------- ключик: пасхалки ---------- */
+const KEY_LINES=["Щёлк! Комната открыта 🔓","Творчество разблокировано ✨","Ключик говорит: «привет!» 👋","Без ключика — никуда 🗝","Ещё чуть-чуть, и откроется что-то секретное…","Вдохновение: 100% 💥","Кто-то сегодня явно сделает шедевр 🎨","Пилим, клеим, творим 🪚"];
+let keyTaps=0,keyTimer=0,lineIdx=Math.floor(Math.random()*KEY_LINES.length);
+function keyRain(){
+  if(reduce)return;
+  const W=innerWidth,H=innerHeight;
+  for(let i=0;i<22;i++){
+    const k=document.createElement("div");k.className="fallkey";k.style.left=(Math.random()*(W-44))+"px";
+    k.innerHTML='<svg viewBox="0 0 885 354"><use href="#keyPath" class="ink"/></svg>';
+    const s=.6+Math.random()*.9;document.body.appendChild(k);
+    k.animate([{transform:`translateY(0) rotate(${Math.random()*360}deg) scale(${s})`,opacity:1},
+               {transform:`translateY(${H+80}px) rotate(${Math.random()*720-360}deg) scale(${s})`,opacity:.9}],
+      {duration:1600+Math.random()*1400,delay:Math.random()*600,easing:"cubic-bezier(.4,.1,.6,1)",fill:"both"}).onfinish=()=>k.remove();
+  }
+}
+document.getElementById("logo").onclick=e=>{
+  const lg=e.currentTarget;lg.classList.remove("turn");void lg.offsetWidth;lg.classList.add("turn");
+  const r=lg.getBoundingClientRect();burst(r.left+r.width*.75,r.top+r.height/2);
+  keyTaps++;clearTimeout(keyTimer);keyTimer=setTimeout(()=>keyTaps=0,2500);
+  if(keyTaps>=7){keyTaps=0;keyRain();haptic("success");toast("Секретный ключепад! 🗝🗝🗝");return}
+  haptic("sel");toast(KEY_LINES[lineIdx++%KEY_LINES.length]);
+};
 
 applyTheme();
 document.getElementById("stamp").textContent=D.demo?"Студгородок · пример":"Студгородок · данные на "+D.ts;
