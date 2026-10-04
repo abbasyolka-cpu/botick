@@ -269,7 +269,7 @@ h1{font-family:var(--display);font-weight:800;font-size:25px;line-height:1.08;ma
 <script>
 (function(){
 const tg = window.Telegram && window.Telegram.WebApp;
-const inTg = !!(tg && tg.initData);
+const inTg = !!(tg && tg.platform && tg.platform !== "unknown");
 const ROOMS=[{id:"tv",name:"Творческая",em:"🎨"},{id:"st",name:"СтСка",em:"🪚"}];
 const WD=["вс","пн","вт","ср","чт","пт","сб"];
 const MG=["января","февраля","марта","апреля","мая","июня","июля","августа","сентября","октября","ноября","декабря"];
@@ -503,7 +503,7 @@ function renderMine(){
   el.appendChild(list);
 }
 function render(){
-  A.rooms=A.first;A.days=A.first||prev.r!==S.r;A.tl=A.first||prev.r!==S.r||prev.d!==S.d||(prev.tab!==S.tab&&S.tab==="sched");
+  A.rooms=A.first;A.days=A.first;A.tl=A.first||prev.d!==S.d||(prev.tab!==S.tab&&S.tab==="sched");
   A.mine=prev.tab!==S.tab&&S.tab==="mine";
   prev={r:S.r,d:S.d,tab:S.tab};A.first=false;
   document.body.dataset.room=ROOMS[S.r].id;
