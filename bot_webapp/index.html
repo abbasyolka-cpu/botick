@@ -61,9 +61,8 @@ h1{font-family:var(--display);font-weight:800;font-size:25px;line-height:1.08;ma
 /* ── логотип-ключик ── */
 .brandrow{position:relative;z-index:6;display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
 .logo{display:block;width:96px;height:39px;overflow:visible;border-radius:10px}
-.logo svg{display:block;width:100%;height:100%;overflow:visible;filter:drop-shadow(0 0 8px color-mix(in srgb,var(--a1) 55%,transparent))}
-.ink{fill:url(#keyGrad)}
-.keystop1{stop-color:var(--a1)} .keystop2{stop-color:var(--a2)}
+.logo svg{display:block;width:100%;height:100%;overflow:visible;filter:drop-shadow(0 0 8px rgba(255,61,165,.55))}
+body[data-room="st"] .logo svg{filter:drop-shadow(0 0 8px rgba(31,216,255,.55))}
 .shine{fill:url(#shineGrad)}
 .bubble{position:absolute;left:4px;top:50px;max-width:250px;padding:9px 13px;border-radius:14px;font-size:13.5px;line-height:1.3;color:#fff;
   background:linear-gradient(120deg,color-mix(in srgb,var(--a1) 85%,#000),color-mix(in srgb,var(--a2) 80%,#000));box-shadow:0 6px 20px -4px color-mix(in srgb,var(--a1) 60%,transparent);
@@ -73,7 +72,8 @@ h1{font-family:var(--display);font-weight:800;font-size:25px;line-height:1.08;ma
 .fallkey{position:fixed;top:-40px;z-index:30;pointer-events:none;width:44px;height:18px}
 .fallkey svg{width:100%;height:100%;display:block;overflow:visible}
 .empty .mini{display:block;width:84px;height:34px;margin:0 auto 12px}
-.empty .mini svg{width:100%;height:100%;overflow:visible;filter:drop-shadow(0 0 10px color-mix(in srgb,var(--a1) 60%,transparent))}
+.empty .mini svg{width:100%;height:100%;overflow:visible;filter:drop-shadow(0 0 10px rgba(255,61,165,.6))}
+body[data-room="st"] .empty .mini svg{filter:drop-shadow(0 0 10px rgba(31,216,255,.6))}
 .empty b{display:block;color:var(--fg);font-family:var(--display);font-weight:600;font-size:15px;margin-bottom:4px}
 
 /* ── вкладки со скользящим индикатором ── */
@@ -147,6 +147,9 @@ h1{font-family:var(--display);font-weight:800;font-size:25px;line-height:1.08;ma
 .slot.past{opacity:.3;cursor:not-allowed}
 .slot.sel{border:1px solid transparent;background:var(--grad);color:#fff;font-weight:600;box-shadow:var(--glow);z-index:1}
 .slot.sel .lb{color:#fff;text-shadow:0 1px 4px rgba(0,0,0,.3)}
+.slot.blocked{border:1px solid rgba(255,59,92,.35);color:#FFB3C1;cursor:not-allowed;
+  background:repeating-linear-gradient(-45deg,rgba(255,59,92,.13) 0 10px,rgba(255,59,92,.05) 10px 20px)}
+.legend i.x{border:1px solid rgba(255,59,92,.5);background:repeating-linear-gradient(-45deg,rgba(255,59,92,.35) 0 3px,rgba(255,59,92,.1) 3px 6px)}
 .closedcard{border-radius:18px;padding:26px 16px;text-align:center;background:var(--surface);border:1px dashed var(--closed)}
 .closedcard b{display:block;font-family:var(--display);font-size:17px;margin-bottom:6px}
 .closedcard span{color:var(--hint);font-size:13.5px}
@@ -170,6 +173,22 @@ h1{font-family:var(--display);font-weight:800;font-size:25px;line-height:1.08;ma
 .bk .x.armed{background:#FF3B5C;border-color:#FF3B5C;color:#fff;box-shadow:0 0 14px #FF3B5C,0 0 30px rgba(255,59,92,.5)}
 .empty{text-align:center;color:var(--hint);padding:34px 14px;border:1px dashed var(--line);border-radius:18px;margin-top:16px;background:var(--surface)}
 .empty .big{font-size:38px;display:block;margin-bottom:8px;filter:drop-shadow(0 0 12px var(--a1))}
+
+/* ── председатель студсовета ── */
+.chair{display:grid;grid-template-columns:auto minmax(0,1fr);gap:12px 14px;align-items:center;width:100%;margin-top:22px;padding:14px;border-radius:20px;text-align:left;isolation:isolate;
+  background:#150D22;border:1px solid transparent;box-shadow:0 10px 30px -12px rgba(124,77,255,.55)}
+.chair::before{content:"";position:absolute;inset:-80%;z-index:-2;background:conic-gradient(from 0deg,#FF3DA5,#7C4DFF,#1FD8FF,#8BFF5A,#FFB03D,#FF3DA5)}
+.chair::after{content:"";position:absolute;inset:1.5px;z-index:-1;border-radius:18.5px;background:linear-gradient(135deg,#1C1030,#120A1E 60%,#1A0F2A)}
+.chair-ava{position:relative;width:52px;height:52px;display:grid;place-items:center}
+.chair-ring{position:absolute;inset:0;border-radius:50%;background:linear-gradient(135deg,#7C4DFF,#FF3DA5);box-shadow:0 0 18px rgba(124,77,255,.7)}
+.chair-ring::after{content:"";position:absolute;inset:-5px;border-radius:50%;border:2px solid rgba(199,125,255,.55)}
+.chair-emo{position:relative;font-size:24px;filter:drop-shadow(0 2px 4px rgba(0,0,0,.35))}
+.chair-tx{display:flex;flex-direction:column;gap:1px;min-width:0}
+.chair-kick{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:#C9A8FF}
+.chair-tx b{font-family:var(--display);font-weight:600;font-size:13.5px;line-height:1.25}
+.chair-sub{font-size:12px;color:var(--hint)}
+.chair-go{grid-column:1/-1;display:flex;justify-content:center;align-items:center;gap:6px;padding:12px;border-radius:13px;font-weight:600;font-size:14.5px;color:#fff;white-space:nowrap;
+  background:linear-gradient(120deg,#7C4DFF,#FF3DA5);box-shadow:0 0 16px rgba(124,77,255,.6)}
 
 /* ── нижняя панель выбора ── */
 .sheet{position:fixed;left:0;right:0;bottom:0;z-index:5;padding:14px 16px calc(14px + env(safe-area-inset-bottom,0px));
@@ -237,6 +256,12 @@ h1{font-family:var(--display);font-weight:800;font-size:25px;line-height:1.08;ma
   .shine{animation:shine 4.5s ease-in-out infinite}
   @keyframes shine{0%,55%{transform:translateX(0)}85%,100%{transform:translateX(1500px)}}
   .empty .mini{animation:float 3s ease-in-out infinite}
+  .chair::before{animation:spin 5s linear infinite}
+  .chair-ring::after{animation:ping 2.4s ease-out infinite}
+  @keyframes ping{0%{transform:scale(.9);opacity:.9}80%,100%{transform:scale(1.35);opacity:0}}
+  .chair-emo{animation:bob 3s ease-in-out infinite}
+  .chair-go svg{animation:nudge 1.8s ease-in-out infinite}
+  @keyframes nudge{50%{transform:translate(2px,-2px)}}
   .empty .mini svg{animation:wink 6s ease-in-out infinite;transform-origin:21% 50%}
   .refresh:active .ar{transition:transform .5s var(--ease);transform:rotate(-360deg)}
   .room:active,.day:active{transform:scale(.94)}
@@ -258,7 +283,8 @@ h1{font-family:var(--display);font-weight:800;font-size:25px;line-height:1.08;ma
 <body data-room="tv">
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <defs>
-    <linearGradient id="keyGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" class="keystop1"/><stop offset="1" class="keystop2"/></linearGradient>
+    <linearGradient id="kg_tv" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FF3DA5"/><stop offset="1" stop-color="#FF9A3D"/></linearGradient>
+    <linearGradient id="kg_st" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1FD8FF"/><stop offset="1" stop-color="#8BFF5A"/></linearGradient>
     <linearGradient id="shineGrad" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff" stop-opacity=".75"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
     <path id="keyPath" fill-rule="evenodd" d="M186,0C62,0 0,64 0,177C0,290 62,354 186,354C292,354 356,300 372,226H539V320H627V236L668,320H708L748,236V320H837V226H885V131H722L688,204L655,131H372C356,54 292,0 186,0ZM177,131H199Q233,131 233,165V185Q233,219 199,219H177Q143,219 143,185V165Q143,131 177,131Z"/>
     <clipPath id="keyClip"><use href="#keyPath"/></clipPath>
@@ -278,7 +304,7 @@ h1{font-family:var(--display);font-weight:800;font-size:25px;line-height:1.08;ma
       <h1>Творческая комната</h1>
     </div>
   </div>
-  <div class="demo" id="demo" hidden>Это пример с выдуманными записями. Настоящее расписание появится, если открыть календарь кнопкой в боте.</div>
+  <div class="demo" id="demo" hidden>Это пример с выдуманными записями. Настоящее расписание появится, если открыть приложение кнопкой «📝 Записаться» в боте.</div>
 
   <div class="tabs" id="tabs" role="tablist" data-t="sched">
     <button role="tab" id="tabSched" aria-selected="true">Расписание</button>
@@ -291,13 +317,23 @@ h1{font-family:var(--display);font-weight:800;font-size:25px;line-height:1.08;ma
     <div class="dayhead"><h2 id="dTitle"></h2><span class="sum" id="dSum"></span></div>
     <div class="tl" id="tl"></div>
     <div class="legend">
-      <span><i></i>свободно</span><span><i class="s"></i>🤝 там делятся</span><span><i class="b"></i>занято</span><span><i class="m"></i>ваша запись</span>
+      <span><i></i>свободно</span><span><i class="s"></i>🤝 там делятся</span><span><i class="b"></i>занято</span><span><i class="x"></i>закрыто</span><span><i class="m"></i>ваша запись</span>
     </div>
   </section>
 
   <section id="vMine" hidden>
     <div id="mineList"></div>
   </section>
+
+  <button class="chair" id="chair" aria-label="Написать председателю студенческого совета общежитий в Telegram">
+    <span class="chair-ava"><span class="chair-ring"></span><span class="chair-emo">💬</span></span>
+    <span class="chair-tx">
+      <span class="chair-kick">Остались вопросы?</span>
+      <b>Председатель студсовета общежитий</b>
+      <span class="chair-sub">Подскажет, поможет, решит ✨</span>
+    </span>
+    <span class="chair-go">Написать @Yolyich<svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+  </button>
 </main>
 
 <div class="sheet" id="sheet" aria-live="polite">
@@ -343,6 +379,7 @@ const dayDate=i=>{const x=new Date(day0);x.setDate(x.getDate()+i);return x};
 const dkey=i=>{const x=dayDate(i);return x.getFullYear()+String(x.getMonth()+1).padStart(2,"0")+String(x.getDate()).padStart(2,"0")};
 const B=D.b.map(a=>({id:a[0],r:a[1],d:a[2],s:a[3],e:a[4],sh:a[5],nm:a[6],me:a[7]}));
 const closed=new Set(D.x.map(a=>a[0]+":"+a[1]));
+const closedH=new Set((D.xh||[]).map(a=>a[0]+":"+a[1]+":"+a[2]));   // отдельные часы, закрытые админом
 
 const S={tab:"sched",r:0,d:0,a:null,b:null,share:true};
 // стартуем с первого дня, где ещё можно записаться
@@ -350,6 +387,7 @@ for(let i=0;i<D.n;i++){if(i>0||D.h<D.c-1){S.d=i;break}}
 
 function hourInfo(r,d,h){
   if(closed.has(r+":"+d))return{st:"closed"};
+  if(closedH.has(r+":"+d+":"+h))return{st:"blocked",over:[],past:d===0&&h<=D.h};
   const over=B.filter(b=>b.r===r&&b.d===d&&b.s<=h&&h<b.e);
   const past=d===0&&h<=D.h;
   const mine=over.find(b=>b.me);
@@ -366,7 +404,7 @@ function haptic(kind){try{if(!tg||!tg.HapticFeedback)return;
 function toast(t){const el=document.getElementById("toast");el.textContent=t;el.classList.add("on");clearTimeout(toast.t);toast.t=setTimeout(()=>el.classList.remove("on"),2400)}
 function send(obj){
   if(inTg){try{tg.sendData(JSON.stringify(obj));return}catch(e){}}
-  toast(D.demo?"Это пример: в боте сюда придёт ваш запрос":"Откройте календарь кнопкой в боте");
+  toast(D.demo?"Это пример: в боте сюда придёт ваш запрос":"Откройте приложение кнопкой «📝 Записаться» в боте");
 }
 function applyTheme(){
   if(!tg)return;
@@ -410,6 +448,7 @@ function range(){if(S.a===null)return null;const s=Math.min(S.a,S.b),e=Math.max(
 function rangeIssue(s,e){
   for(let h=s;h<e;h++){const x=hourInfo(S.r,S.d,h);
     if(x.st==="closed")return"День закрыт";
+    if(x.st==="blocked")return hh(h)+" закрыто администратором";
     if(x.past)return"Это время уже прошло";
     if(x.st==="busy")return hh(h)+" уже занято целиком";
     if(x.mine)return"В "+hh(h)+" у вас уже есть запись";}
@@ -419,9 +458,9 @@ function rangeIssue(s,e){
 function rangeHasShared(s,e){for(let h=s;h<e;h++)if(hourInfo(S.r,S.d,h).st==="shared")return true;return false}
 function tapHour(h,el){
   const x=hourInfo(S.r,S.d,h);
-  if(x.past||x.st==="busy"||x.mine||x.st==="closed"){
+  if(x.past||x.st==="busy"||x.mine||x.st==="closed"||x.st==="blocked"){
     el.classList.remove("shake");void el.offsetWidth;el.classList.add("shake");haptic("warning");
-    toast(x.past?"Это время уже прошло":x.mine?"Здесь уже ваша запись":"Занято: помещение не делят");return}
+    toast(x.past?"Это время уже прошло":x.mine?"Здесь уже ваша запись":x.st==="blocked"?"Это время закрыто администратором 🚫":"Занято: помещение не делят");return}
   if(S.a===null||S.a!==S.b){S.a=h;S.b=h}            // новый выбор
   else if(h===S.a){S.a=S.b=null}                       // повторный тап — снять
   else{const s=Math.min(S.a,h),e=Math.max(S.a,h)+1,issue=rangeIssue(s,e);
@@ -478,6 +517,7 @@ function renderTimeline(){
     const ic=document.createElement("span");ic.className="ic";const lb=document.createElement("span");lb.className="lb";
     const names=x.over?x.over.map(o=>o.me?"вы":o.nm):[];
     if(x.mine){b.classList.add("mine");ic.textContent=x.mine.sh?"🤝":"🔒";lb.textContent="ваша запись"+(names.length>1?" · ещё "+names.filter(n=>n!=="вы").join(", "):"")}
+    else if(x.st==="blocked"){b.classList.add("blocked");ic.textContent="🚫";lb.textContent="закрыто администратором"}
     else if(x.st==="busy"){b.classList.add("busy");ic.textContent="🔒";lb.textContent=names.join(", ")}
     else if(x.st==="shared"){b.classList.add("shared");ic.textContent="🤝";lb.textContent=names.join(", ")+" · можно присоединиться"}
     else{b.classList.add("free");lb.textContent=x.past?"":"свободно"}
@@ -558,8 +598,10 @@ function render(){
   document.getElementById("tabMine").setAttribute("aria-selected",String(S.tab==="mine"));
   document.getElementById("vSched").hidden=S.tab!=="sched";
   document.getElementById("vMine").hidden=S.tab!=="mine";
-  renderRooms();renderDays();renderTimeline();renderMine();renderSheet();
+  renderRooms();renderDays();renderTimeline();renderMine();renderSheet();paintKeys();
 }
+// цвет ключика меняется сразу вместе с помещением: просто переключаем ссылку на нужный градиент
+function paintKeys(){const g="url(#kg_"+ROOMS[S.r].id+")";document.querySelectorAll(".ink").forEach(e=>{if(e.getAttribute("fill")!==g)e.setAttribute("fill",g)})}
 
 /* ---------- события ---------- */
 document.getElementById("tabSched").onclick=()=>{S.tab="sched";haptic("sel");render()};
@@ -579,7 +621,7 @@ function keyRain(){
   const W=innerWidth,H=innerHeight;
   for(let i=0;i<22;i++){
     const k=document.createElement("div");k.className="fallkey";k.style.left=(Math.random()*(W-44))+"px";
-    k.innerHTML='<svg viewBox="0 0 885 354"><use href="#keyPath" class="ink"/></svg>';
+    k.innerHTML='<svg viewBox="0 0 885 354"><use href="#keyPath" class="ink" fill="url(#kg_'+ROOMS[S.r].id+')"/></svg>';
     const s=.6+Math.random()*.9;document.body.appendChild(k);
     k.animate([{transform:`translateY(0) rotate(${Math.random()*360}deg) scale(${s})`,opacity:1},
                {transform:`translateY(${H+80}px) rotate(${Math.random()*720-360}deg) scale(${s})`,opacity:.9}],
@@ -596,6 +638,9 @@ document.getElementById("logo").onclick=e=>{
   if(keyTaps>=7){keyTaps=0;keyRain();haptic("success");say("Секретный ключепад! 🗝🗝🗝");return}
   haptic("sel");say(KEY_LINES[lineIdx++%KEY_LINES.length]);
 };
+
+document.getElementById("chair").onclick=()=>{haptic("sel");const url="https://t.me/Yolyich";
+  try{if(tg&&tg.openTelegramLink){tg.openTelegramLink(url);return}}catch(e){}window.open(url,"_blank")};
 
 applyTheme();
 document.getElementById("stamp").textContent=D.demo?"Студгородок · пример":"Студгородок · данные на "+D.ts;
