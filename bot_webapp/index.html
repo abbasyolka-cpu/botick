@@ -174,21 +174,95 @@ body[data-room="st"] .empty .mini svg{filter:drop-shadow(0 0 10px rgba(31,216,25
 .empty{text-align:center;color:var(--hint);padding:34px 14px;border:1px dashed var(--line);border-radius:18px;margin-top:16px;background:var(--surface)}
 .empty .big{font-size:38px;display:block;margin-bottom:8px;filter:drop-shadow(0 0 12px var(--a1))}
 
-/* ── председатель студсовета ── */
-.chair{display:grid;grid-template-columns:auto minmax(0,1fr);gap:12px 14px;align-items:center;width:100%;margin-top:22px;padding:14px;border-radius:20px;text-align:left;isolation:isolate;
-  background:#150D22;border:1px solid transparent;box-shadow:0 10px 30px -12px rgba(124,77,255,.55)}
-.chair::before{content:"";position:absolute;inset:0;z-index:-2;border-radius:20px;background:#FF3B6B}
-.chair::after{content:"";position:absolute;inset:2px;z-index:-1;border-radius:18px;background:linear-gradient(135deg,#1C1030,#120A1E 60%,#1A0F2A)}
-.chair-ava{position:relative;width:52px;height:52px;display:grid;place-items:center}
-.chair-ring{position:absolute;inset:0;border-radius:50%;background:linear-gradient(135deg,#7C4DFF,#FF3DA5);box-shadow:0 0 18px rgba(124,77,255,.7)}
-.chair-ring::after{content:"";position:absolute;inset:-5px;border-radius:50%;border:2px solid rgba(199,125,255,.55)}
-.chair-emo{position:relative;font-size:24px;filter:drop-shadow(0 2px 4px rgba(0,0,0,.35))}
-.chair-tx{display:flex;flex-direction:column;gap:1px;min-width:0}
-.chair-kick{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:#C9A8FF}
-.chair-tx b{font-family:var(--display);font-weight:600;font-size:13.5px;line-height:1.25}
-.chair-sub{font-size:12px;color:var(--hint)}
-.chair-go{grid-column:1/-1;display:flex;justify-content:center;align-items:center;gap:6px;padding:12px;border-radius:13px;font-weight:600;font-size:14.5px;color:#fff;white-space:nowrap;
-  background:linear-gradient(120deg,#7C4DFF,#FF3DA5);box-shadow:0 0 16px rgba(124,77,255,.6)}
+/* ── председатель студсовета: компактная плашка ── */
+.chair{display:flex;align-items:center;gap:7px;width:max-content;max-width:100%;margin:22px auto 0;padding:8px 14px;border-radius:999px;isolation:isolate;
+  font-size:13px;color:var(--hint);background:#150D22}
+.chair::before{content:"";position:absolute;inset:0;z-index:-2;border-radius:999px;background:#FF3B6B}
+.chair::after{content:"";position:absolute;inset:1.5px;z-index:-1;border-radius:999px;background:#140C21}
+.chair b{font-family:var(--display);font-weight:600;font-size:12.5px;color:var(--fg)}
+.chair .ar{font-size:12px;color:var(--fg);transition:transform .3s var(--ease)}
+.chair:active .ar{transform:translate(2px,-2px)}
+
+/* ── плашки «запись закрыта / бан» ── */
+.note{display:flex;gap:10px;align-items:flex-start;margin-top:14px;padding:12px 14px;border-radius:16px;font-size:13.5px;line-height:1.4;
+  background:rgba(255,154,61,.10);border:1px solid rgba(255,154,61,.35);color:#FFE3C9}
+.note.ban{background:rgba(255,59,92,.12);border-color:rgba(255,59,92,.45);color:#FFD3DC}
+.note .ic{font-size:18px;line-height:1.2}
+.note b{color:#fff}
+.note a{color:#fff;font-weight:600}
+.slot.early{opacity:.42;cursor:not-allowed;border-style:dashed}
+
+/* ── окно перед записью: Кубок → правила ── */
+.flow{position:fixed;inset:0;z-index:12;display:flex;align-items:flex-end;justify-content:center;visibility:hidden;pointer-events:none}
+.flow.on{visibility:visible;pointer-events:auto}
+.flow .bd{position:absolute;inset:0;background:rgba(6,3,12,.62);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);opacity:0;transition:opacity .35s}
+.flow.on .bd{opacity:1}
+.card{position:relative;width:100%;max-width:560px;max-height:92vh;overflow:auto;border-radius:26px 26px 0 0;padding:18px 18px calc(18px + env(safe-area-inset-bottom,0px));
+  background:linear-gradient(180deg,#1A1029,#120A1E);border-top:1px solid color-mix(in srgb,var(--a1) 60%,transparent);
+  box-shadow:0 -14px 50px color-mix(in srgb,var(--a1) 25%,transparent);transform:translateY(105%);transition:transform .5s var(--ease)}
+.flow.on .card{transform:none}
+.card .grab{width:40px;height:4px;border-radius:4px;background:rgba(255,255,255,.2);margin:-6px auto 12px}
+.card .x{position:absolute;right:12px;top:10px;width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.07);font-size:16px;color:var(--hint)}
+.card .what{font-family:var(--mono);font-size:11.5px;color:var(--hint);letter-spacing:.02em;padding-right:40px}
+.card h3{font-family:var(--display);font-weight:800;font-size:19px;line-height:1.2;margin:8px 0 6px;text-wrap:balance}
+.card p{margin:0 0 14px;color:var(--hint);font-size:13.5px}
+.step{display:none}
+.step.on{display:block;animation:stepIn .45s var(--ease) both}
+@keyframes stepIn{from{opacity:0;transform:translateX(24px)}to{opacity:1;transform:none}}
+.yn{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.opt{padding:14px;border-radius:15px;background:rgba(255,255,255,.06);border:1px solid var(--line);font-weight:600;font-size:15px;transition:background .25s,border-color .25s,box-shadow .25s}
+.opt[aria-pressed="true"]{background:var(--grad);border-color:transparent;color:#fff;box-shadow:var(--glow)}
+.teams{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:14px}
+.teams .opt{padding:12px 6px;font-family:var(--display);font-size:12.5px;letter-spacing:.02em}
+.teams[hidden]{display:none}
+.btns{display:flex;gap:10px;margin-top:16px}
+.btns .go{flex:1}
+.go[disabled]{opacity:.35;box-shadow:none;cursor:not-allowed}
+.ghost{padding:14px 16px;border-radius:14px;background:rgba(255,255,255,.07);font-weight:600;font-size:14px;color:var(--fg)}
+.rulesbtn{display:flex;align-items:center;gap:12px;width:100%;padding:13px 14px;border-radius:15px;text-align:left;
+  background:linear-gradient(120deg,rgba(255,106,43,.22),rgba(255,179,122,.08));border:1px solid rgba(255,154,61,.45)}
+.rulesbtn .bk{flex:none;width:38px;height:38px;border-radius:11px;display:grid;place-items:center;background:#5A1E06;font-size:19px}
+.rulesbtn b{display:block;font-size:14.5px}
+.rulesbtn span{font-size:12.5px;color:#F2C9AE}
+.rulesbtn .arr{margin-left:auto;color:#FFB37A;font-size:18px}
+.agree{display:flex;align-items:center;gap:12px;width:100%;margin-top:12px;padding:13px 14px;border-radius:15px;text-align:left;background:rgba(255,255,255,.05);border:1px solid var(--line);transition:border-color .3s,background .3s}
+.agree[aria-checked="true"]{border-color:color-mix(in srgb,var(--a1) 70%,transparent);background:color-mix(in srgb,var(--a1) 10%,transparent)}
+.agree .tx{font-size:14px;line-height:1.35}
+.cb{flex:none;width:28px;height:28px;border-radius:9px;border:2px solid rgba(255,255,255,.35);display:grid;place-items:center;transition:background .3s,border-color .3s,box-shadow .3s,transform .3s var(--ease)}
+.cb svg{width:18px;height:18px;overflow:visible}
+.cb path{fill:none;stroke:#fff;stroke-width:3.2;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:24;stroke-dashoffset:24;transition:stroke-dashoffset .35s ease .08s}
+.agree[aria-checked="true"] .cb{background:var(--grad);border-color:transparent;box-shadow:var(--glow);animation:pop .45s var(--ease)}
+.agree[aria-checked="true"] .cb path{stroke-dashoffset:0}
+@keyframes pop{0%{transform:scale(.7)}60%{transform:scale(1.18)}100%{transform:scale(1)}}
+
+/* ── правила: окно в фирменном оранжевом стиле ── */
+.rv{position:fixed;inset:0;z-index:15;overflow:auto;-webkit-overflow-scrolling:touch;visibility:hidden;opacity:0;transform:translateY(30px);
+  transition:opacity .35s,transform .45s var(--ease),visibility 0s .45s;
+  --r-bg:#5A1E06;--r-deep:#3E1404;--r-card:#4A1905;--r-line:rgba(255,214,186,.16);--r-fg:#FFF2E8;--r-muted:#F2C9AE;--r-hi:#FFB37A;--r-flame:#FF6A2B;--r-ink:#2A0D02;
+  background:radial-gradient(900px 420px at 50% -100px,#B9460F 0%,transparent 70%),linear-gradient(180deg,var(--r-bg),var(--r-deep));color:var(--r-fg)}
+.rv.on{visibility:visible;opacity:1;transform:none;transition:opacity .35s,transform .45s var(--ease)}
+.rv .in{max-width:560px;margin:0 auto;padding:18px 16px calc(28px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:26px}
+.rv .close{position:sticky;top:calc(8px + env(safe-area-inset-top,0px));align-self:flex-end;z-index:2;width:38px;height:38px;border-radius:50%;background:rgba(42,13,2,.55);color:var(--r-fg);font-size:17px;
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);margin-bottom:-52px}
+.rv .hero{display:flex;flex-direction:column;align-items:center;text-align:center;gap:12px;padding-top:6px}
+.rv .hero svg{width:min(210px,62%);height:auto;filter:drop-shadow(0 0 20px rgba(255,120,50,.55))}
+.rv .eb{font-family:var(--display);font-weight:600;font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--r-hi)}
+.rv h2{font-family:var(--display);font-weight:800;font-size:25px;line-height:1.1;margin:0;text-wrap:balance}
+.rv .rooms2{display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%}
+.rv .rm{padding:10px 12px;border-radius:13px;background:rgba(0,0,0,.18);border:1px solid var(--r-line);text-align:left}
+.rv .rm b{display:block;font-family:var(--display);font-weight:600;font-size:13px}
+.rv .rm span{font-size:12px;color:var(--r-muted);line-height:1.35;display:block}
+.rv section{display:flex;flex-direction:column;gap:8px}
+.rv h4{font-family:var(--display);font-weight:600;font-size:17px;margin:0}
+.rv h4 small{font-family:var(--body);font-weight:400;font-size:12px;color:var(--r-muted);margin-left:8px}
+.rv ol{list-style:none;counter-reset:r;margin:0;padding:0}
+.rv li{counter-increment:r;display:grid;grid-template-columns:26px minmax(0,1fr);gap:8px;padding:10px 0;border-top:1px solid var(--r-line);font-size:14px;line-height:1.5}
+.rv li:first-child{border-top:0}
+.rv li::before{content:counter(r);font-family:var(--display);font-weight:600;font-size:13px;color:var(--r-flame);line-height:1.6}
+.rv strong{color:var(--r-hi)}
+.rv a{color:var(--r-hi)}
+.rv .ban2{background:var(--r-flame);color:var(--r-ink);border-radius:16px;padding:14px;text-align:center;font-family:var(--display);font-weight:600;font-size:15px;line-height:1.3}
+.rv .ok{background:var(--r-fg);color:var(--r-ink);border-radius:14px;padding:14px;font-weight:700;font-size:15px;text-align:center}
 
 /* ── нижняя панель выбора ── */
 .sheet{position:fixed;left:0;right:0;bottom:0;z-index:5;padding:14px 16px calc(14px + env(safe-area-inset-bottom,0px));
@@ -258,11 +332,6 @@ body[data-room="st"] .empty .mini svg{filter:drop-shadow(0 0 10px rgba(31,216,25
   .empty .mini{animation:float 3s ease-in-out infinite}
   .chair::before{animation:rgb 6s linear infinite}
   @keyframes rgb{0%,100%{background:#FF3B6B}17%{background:#FF9A2E}33%{background:#FFE53D}50%{background:#3DFF8A}67%{background:#1FD8FF}83%{background:#9B5CFF}}
-  .chair-ring::after{animation:ping 2.4s ease-out infinite}
-  @keyframes ping{0%{transform:scale(.9);opacity:.9}80%,100%{transform:scale(1.35);opacity:0}}
-  .chair-emo{animation:bob 3s ease-in-out infinite}
-  .chair-go svg{animation:nudge 1.8s ease-in-out infinite}
-  @keyframes nudge{50%{transform:translate(2px,-2px)}}
   .empty .mini svg{animation:wink 6s ease-in-out infinite;transform-origin:21% 50%}
   .refresh:active .ar{transition:transform .5s var(--ease);transform:rotate(-360deg)}
   .room:active,.day:active{transform:scale(.94)}
@@ -313,6 +382,7 @@ body[data-room="st"] .empty .mini svg{filter:drop-shadow(0 0 10px rgba(31,216,25
   </div>
 
   <section id="vSched">
+    <div id="note"></div>
     <div class="rooms" id="rooms"></div>
     <div class="days" id="days"></div>
     <div class="dayhead"><h2 id="dTitle"></h2><span class="sum" id="dSum"></span></div>
@@ -326,15 +396,7 @@ body[data-room="st"] .empty .mini svg{filter:drop-shadow(0 0 10px rgba(31,216,25
     <div id="mineList"></div>
   </section>
 
-  <button class="chair" id="chair" aria-label="Написать председателю студенческого совета общежитий в Telegram">
-    <span class="chair-ava"><span class="chair-ring"></span><span class="chair-emo">💬</span></span>
-    <span class="chair-tx">
-      <span class="chair-kick">Остались вопросы?</span>
-      <b>Председатель студсовета общежитий</b>
-      <span class="chair-sub">Подскажет, поможет, решит ✨</span>
-    </span>
-    <span class="chair-go">Написать @Yolyich<svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-  </button>
+  <button class="chair" id="chair" aria-label="Написать председателю студсовета общежитий в Telegram">Вопросы — председателю СтС <b>@Yolyich</b><span class="ar">↗</span></button>
 </main>
 
 <div class="sheet" id="sheet" aria-live="polite">
@@ -349,11 +411,88 @@ body[data-room="st"] .empty .mini svg{filter:drop-shadow(0 0 10px rgba(31,216,25
 </div>
 <div class="toast" id="toast"></div>
 
+<div class="flow" id="flow" role="dialog" aria-modal="true" aria-labelledby="fTitle">
+  <div class="bd" id="fBd"></div>
+  <div class="card">
+    <div class="grab"></div>
+    <button class="x" id="fX" aria-label="Закрыть">✕</button>
+    <div class="what" id="fWhat"></div>
+    <div class="step" id="stCup">
+      <h3 id="fTitle">Вы бронируете помещение для Кубка Первокурсников?</h3>
+      <div class="yn"><button class="opt" id="cupNo" aria-pressed="false">Нет</button><button class="opt" id="cupYes" aria-pressed="false">Да 🏆</button></div>
+      <div class="teams" id="teams" hidden></div>
+      <div class="btns"><button class="go" id="cupNext" disabled>Далее</button></div>
+    </div>
+    <div class="step" id="stRules">
+      <h3>Правила помещений</h3>
+      <p>Перед записью прочитайте правила Творческой и СтСки и подтвердите, что согласны с ними.</p>
+      <button class="rulesbtn" id="openRules"><span class="bk">📖</span><span><b>Открыть правила</b><span>Запись, порядок, время работы</span></span><span class="arr">›</span></button>
+      <button class="agree" id="agree" role="checkbox" aria-checked="false">
+        <span class="cb"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>
+        <span class="tx">Я прочитал(а) правила и согласен(на) с ними</span>
+      </button>
+      <div class="btns"><button class="ghost" id="rulesBack">Назад</button><button class="go" id="fGo" disabled>Записаться</button></div>
+    </div>
+  </div>
+</div>
+
+<div class="rv" id="rv" role="dialog" aria-modal="true" aria-label="Правила Творческой и СтСки">
+  <div class="in">
+    <button class="close" id="rvX" aria-label="Закрыть правила">✕</button>
+    <div class="hero">
+      <svg viewBox="0 0 885 354" aria-hidden="true"><defs><linearGradient id="rvg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFF6EE"/><stop offset=".55" stop-color="#FFD2AE"/><stop offset="1" stop-color="#FF9A5C"/></linearGradient></defs><use href="#keyPath" fill="url(#rvg)"/></svg>
+      <div class="eb">Студсовет общежитий</div>
+      <h2>Правила Творческой и СтСки</h2>
+      <div class="rooms2"><div class="rm"><b>Творческая</b><span>для творчества и работы с инструментами</span></div><div class="rm"><b>СтСка</b><span>для собраний, встреч и обсуждений</span></div></div>
+    </div>
+    <section><h4>Запись</h4><ol>
+      <li><span>Приходить можно только по записи через бота: кнопка «Записаться».</span></li>
+      <li><span><strong>Бронировать помещение нужно заранее - минимум за день.</strong> Если что-то срочное, пиши председателю СтС общежитий: <a href="https://t.me/Yolyich" data-tg>@Yolyich</a>.</span></li>
+      <li><span>Комнаты работают каждый день <strong>с 9:00 до 23:00</strong>. К 23:00 помещение должно быть свободно и убрано.</span></li>
+      <li><span>Нужно поработать <strong>до 00:00</strong> - договорись об этом с председателем СтС общежитий за день: <a href="https://t.me/Yolyich" data-tg>@Yolyich</a>.</span></li>
+      <li><span>Передумал - отмени запись заранее во вкладке «Мои записи», чтобы время досталось другим.</span></li>
+      <li><span><strong>Делюсь</strong> - вместе с тобой могут работать другие. Будь готов освободить часть места.</span></li>
+      <li><span><strong>Только моё</strong> - комната твоя, но не бронируй её целиком без реальной необходимости.</span></li>
+      <li><span>Не занимай время «про запас»: бронь на всякий случай мешает другим.</span></li>
+    </ol></section>
+    <section><h4>Порядок</h4><ol>
+      <li><span>Уходя, оставь комнату такой, какой хотел бы её увидеть: убери мусор, расставь всё по местам.</span></li>
+      <li><span>Инструменты и материалы после работы верни на свои места.</span></li>
+      <li><span>Если что-то сломалось или закончилось, напиши председателю студсовета.</span></li>
+      <li><span>Не выноси общие инструменты и материалы из комнаты без разрешения.</span></li>
+      <li><span>Чужие работы и материалы не трогай без разрешения автора.</span></li>
+    </ol></section>
+    <section><h4>Творческая<small>краски и инструменты</small></h4><ol>
+      <li><span><strong>Краски - только до 19:00</strong>, при открытых окнах, в перчатках и респираторе.</span></li>
+      <li><span>Краску, клей и лаки используй на подстилке или плёнке, а не на голом столе и полу.</span></li>
+      <li><span>Кисти и палитры мой сразу после работы, не оставляй засыхать.</span></li>
+      <li><span><strong>Пилить и шумно работать с инструментами - только до 21:30.</strong></span></li>
+      <li><span>Брать инструменты можно <strong>только с разрешения председателя СтС общежитий</strong>: <a href="https://t.me/Yolyich" data-tg>@Yolyich</a>.</span></li>
+      <li><span>Защитные очки обязательны при работе пилой, лобзиком, дрелью и при шлифовке.</span></li>
+      <li><span>Не оставляй инструмент включённым без присмотра, а уходя - выключи его из розетки.</span></li>
+      <li><span>Опилки и стружку убери после себя: подмети.</span></li>
+      <li><span>Еду и напитки держи подальше от красок.</span></li>
+    </ol></section>
+    <section><h4>СтСка<small>собрания и встречи</small></h4><ol>
+      <li><span>СтСка лучше всего подходит для собраний, встреч, обсуждений и т.п.</span></li>
+      <li><span><strong>Работать с инструментами в СтСке нельзя</strong> - для этого есть Творческая.</span></li>
+    </ol></section>
+    <section><h4>Безопасность и нарушения</h4>
+      <div class="ban2">Алкоголь и курение в помещениях запрещены</div><ol>
+      <li><span>Свечи и открытый огонь тоже под запретом.</span></li>
+      <li><span>При травме или поломке сразу сообщи председателю студсовета.</span></li>
+      <li><span>За нарушения правил администратор имеет права отменять записи и ограничить доступ к записи.</span></li>
+    </ol></section>
+    <button class="ok" id="rvOk">Понятно</button>
+  </div>
+</div>
+
 <script>
 (function(){
 const tg = window.Telegram && window.Telegram.WebApp;
 const inTg = !!(tg && tg.platform && tg.platform !== "unknown");
-const ROOMS=[{id:"tv",name:"Творческая",em:"🎨"},{id:"st",name:"СтСка",em:"🪚"}];
+const ROOMS=[{id:"tv",name:"Творческая",em:"🎨"},{id:"st",name:"СтСка",em:"💬"}];
+const CHAIR="https://t.me/Yolyich";
 const WD=["вс","пн","вт","ср","чт","пт","сб"];
 const MG=["января","февраля","марта","апреля","мая","июня","июля","августа","сентября","октября","ноября","декабря"];
 const hh=h=>String(h).padStart(2,"0")+":00";
@@ -370,7 +509,7 @@ function demo(){
   const d=new Date(),iso=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
   return {v:1,d0:iso,n:7,o:9,c:23,h:Math.min(d.getHours(),12),ts:"пример",mx:0,demo:true,
     b:[[1,0,0,14,17,1,"Аня",0],[2,0,0,15,18,1,"Миша",0],[3,0,0,19,22,0,"Декораторы КВН",0],
-       [4,1,0,13,15,0,"Дима",0],[5,0,1,10,13,1,"Вы",1],[6,1,1,16,20,1,"Лера",0],[7,0,2,11,23,0,"Студсовет",0]],
+       [4,1,0,13,15,0,"Дима",0],[5,0,1,10,13,1,"Вы",1],[6,1,1,16,20,1,"Лера",0],[7,0,2,11,23,0,"Студсовет",0],[8,0,1,18,21,0,"Ира",0,"МПСУ"]],ad:1,
     x:[[1,3]]};
 }
 let D;
@@ -378,13 +517,17 @@ try{const p=new URLSearchParams(location.search).get("d");D=p?decode(p):demo()}c
 const day0=(()=>{const[y,m,d]=D.d0.split("-").map(Number);return new Date(y,m-1,d)})();
 const dayDate=i=>{const x=new Date(day0);x.setDate(x.getDate()+i);return x};
 const dkey=i=>{const x=dayDate(i);return x.getFullYear()+String(x.getMonth()+1).padStart(2,"0")+String(x.getDate()).padStart(2,"0")};
-const B=D.b.map(a=>({id:a[0],r:a[1],d:a[2],s:a[3],e:a[4],sh:a[5],nm:a[6],me:a[7]}));
+const B=D.b.map(a=>({id:a[0],r:a[1],d:a[2],s:a[3],e:a[4],sh:a[5],nm:a[6],me:a[7],cup:a[8]||""}));
+const AD=D.ad||0;                       // по правилам: запись минимум за AD дн. (у админа 0)
+const BAN=D.ban||"";                    // бан на запись: "до 22.10 18:00" / "навсегда"
+const TEAMS=D.cup||["МПСУ","БЭНСЫ","ГУМЫ","СПИНТЕХ","БУКВЫ","КОЛЛЕДЖ"];
+const tag=b=>b.cup?"🏆 "+b.cup:b.nm;    // если бронировала команда Кубка — показываем команду
 const closed=new Set(D.x.map(a=>a[0]+":"+a[1]));
 const closedH=new Set((D.xh||[]).map(a=>a[0]+":"+a[1]+":"+a[2]));   // отдельные часы, закрытые админом
 
 const S={tab:"sched",r:0,d:0,a:null,b:null,share:true};
 // стартуем с первого дня, где ещё можно записаться
-for(let i=0;i<D.n;i++){if(i>0||D.h<D.c-1){S.d=i;break}}
+for(let i=0;i<D.n;i++){if(i>=AD&&(i>0||D.h<D.c-1)){S.d=i;break}}
 
 function hourInfo(r,d,h){
   if(closed.has(r+":"+d))return{st:"closed"};
@@ -394,9 +537,11 @@ function hourInfo(r,d,h){
   const mine=over.find(b=>b.me);
   let st="free";
   if(over.length)st=over.some(b=>!b.sh)?"busy":"shared";
-  return{st,over,past,mine};
+  return{st,over,past,mine,early:d<AD};
 }
-function freeHours(r,d){let n=0;for(let h=D.o;h<D.c;h++){const x=hourInfo(r,d,h);if(x.st==="free"&&!x.past)n++}return n}
+function freeHours(r,d){let n=0;for(let h=D.o;h<D.c;h++){const x=hourInfo(r,d,h);if(x.st==="free"&&!x.past&&!x.early)n++}return n}
+const EARLY_MSG="Бронь — минимум за день. На сегодня записаться уже нельзя";
+const BAN_MSG="Вам ограничен доступ к записи ("+BAN+")";
 function load(r,d){let n=0;for(let h=D.o;h<D.c;h++){if(hourInfo(r,d,h).st!=="free")n++}return n/(D.c-D.o)}
 
 /* ---------- Telegram ---------- */
@@ -451,6 +596,7 @@ function rangeIssue(s,e){
     if(x.st==="closed")return"День закрыт";
     if(x.st==="blocked")return hh(h)+" закрыто администратором";
     if(x.past)return"Это время уже прошло";
+    if(x.early)return EARLY_MSG;
     if(x.st==="busy")return hh(h)+" уже занято целиком";
     if(x.mine)return"В "+hh(h)+" у вас уже есть запись";}
   if(D.mx&&e-s>D.mx)return"Максимум "+D.mx+" ч за одну запись";
@@ -459,6 +605,8 @@ function rangeIssue(s,e){
 function rangeHasShared(s,e){for(let h=s;h<e;h++)if(hourInfo(S.r,S.d,h).st==="shared")return true;return false}
 function tapHour(h,el){
   const x=hourInfo(S.r,S.d,h);
+  if(BAN&&!x.mine&&!x.past){el.classList.remove("shake");void el.offsetWidth;el.classList.add("shake");haptic("error");toast(BAN_MSG);return}
+  if(x.early&&!x.mine&&!x.past){el.classList.remove("shake");void el.offsetWidth;el.classList.add("shake");haptic("warning");toast(EARLY_MSG);return}
   if(x.past||x.st==="busy"||x.mine||x.st==="closed"||x.st==="blocked"){
     el.classList.remove("shake");void el.offsetWidth;el.classList.add("shake");haptic("warning");
     toast(x.past?"Это время уже прошло":x.mine?"Здесь уже ваша запись":x.st==="blocked"?"Это время закрыто администратором 🚫":"Занято: помещение не делят");return}
@@ -470,11 +618,18 @@ function tapHour(h,el){
 }
 
 /* ---------- отрисовка ---------- */
+function renderNote(){
+  const el=document.getElementById("note");el.textContent="";
+  let html="";
+  if(BAN)html='<div class="note ban"><span class="ic">⛔</span><span>Вам ограничен доступ к записи <b>'+BAN+'</b>. Вопросы — председателю СтС общежитий <a href="'+CHAIR+'" data-tg>@Yolyich</a></span></div>';
+  else if(S.d<AD)html='<div class="note"><span class="ic">📅</span><span><b>На сегодня запись закрыта.</b> По правилам бронировать нужно минимум за день. Если что-то срочное — напишите председателю СтС <a href="'+CHAIR+'" data-tg>@Yolyich</a></span></div>';
+  el.innerHTML=html;
+}
 function renderRooms(){
   const el=document.getElementById("rooms");el.textContent="";el.classList.toggle("enter",A.rooms);
   ROOMS.forEach((r,i)=>{
     const b=document.createElement("button");b.className="room";b.dataset.r=r.id;b.setAttribute("aria-pressed",String(S.r===i));
-    const f=closed.has(i+":"+S.d)?"закрыто":freeHours(i,S.d)+" "+plural(freeHours(i,S.d),"свободный час","свободных часа","свободных часов");
+    const f=closed.has(i+":"+S.d)?"закрыто":S.d<AD?"запись закрыта":freeHours(i,S.d)+" "+plural(freeHours(i,S.d),"свободный час","свободных часа","свободных часов");
     b.innerHTML='<div class="em"></div><div class="nm"></div><div class="fr"></div>';
     b.querySelector(".em").textContent=r.em;b.querySelector(".nm").textContent=r.name;b.querySelector(".fr").textContent=f;
     b.style.setProperty("--i",i);
@@ -516,13 +671,14 @@ function renderTimeline(){
     const t=document.createElement("div");t.className="t";t.textContent=hh(h);
     const b=document.createElement("button");b.className="slot";
     const ic=document.createElement("span");ic.className="ic";const lb=document.createElement("span");lb.className="lb";
-    const names=x.over?x.over.map(o=>o.me?"вы":o.nm):[];
-    if(x.mine){b.classList.add("mine");ic.textContent=x.mine.sh?"🤝":"🔒";lb.textContent="ваша запись"+(names.length>1?" · ещё "+names.filter(n=>n!=="вы").join(", "):"")}
+    const names=x.over?x.over.map(o=>o.me?"вы":tag(o)):[];
+    if(x.mine){b.classList.add("mine");ic.textContent=x.mine.sh?"🤝":"🔒";lb.textContent="ваша запись"+(x.mine.cup?" · 🏆 "+x.mine.cup:"")+(names.length>1?" · ещё "+names.filter(n=>n!=="вы").join(", "):"")}
     else if(x.st==="blocked"){b.classList.add("blocked");ic.textContent="🚫";lb.textContent="закрыто администратором"}
     else if(x.st==="busy"){b.classList.add("busy");ic.textContent="🔒";lb.textContent=names.join(", ")}
     else if(x.st==="shared"){b.classList.add("shared");ic.textContent="🤝";lb.textContent=names.join(", ")+" · можно присоединиться"}
-    else{b.classList.add("free");lb.textContent=x.past?"":"свободно"}
+    else{b.classList.add("free");lb.textContent=x.past?"":x.early?"запись закрыта":"свободно"}
     if(x.past)b.classList.add("past");
+    else if(x.early&&!x.mine)b.classList.add("early");
     if(rg&&h>=rg.s&&h<rg.e){
       b.classList.add("sel");const parts=[];
       if(h===rg.s)parts.push("начало");
@@ -537,7 +693,7 @@ function renderTimeline(){
 }
 function renderSheet(){
   const sh=document.getElementById("sheet"),rg=range();
-  if(!rg||S.tab!=="sched"){sh.classList.remove("on");if(inTg)tg.MainButton.hide();return}
+  if(!rg||S.tab!=="sched"||BAN){sh.classList.remove("on");if(inTg)tg.MainButton.hide();return}
   const forced=rangeHasShared(rg.s,rg.e);
   if(forced)S.share=true;
   const room=ROOMS[S.r],d=dayDate(S.d);
@@ -552,20 +708,65 @@ function renderSheet(){
   sh.classList.add("on");
   if(inTg){
     document.getElementById("sGo").classList.add("hidden");
+    if(F.open){try{tg.MainButton.hide()}catch(e){}return}
     try{
       tg.MainButton.setParams({text:label,is_visible:true,is_active:true,
         color:cssVar("--a1")||undefined,text_color:"#ffffff"});
     }catch(e){tg.MainButton.setText(label);tg.MainButton.show()}
   }else{const g=document.getElementById("sGo");g.classList.remove("hidden");g.textContent=label}
 }
+/* ---------- перед записью: Кубок первокурсников → правила ---------- */
+const F={open:false,cup:null,team:null,ok:false};
+const $=id=>document.getElementById(id);
 function book(){
   const rg=range();if(!rg)return;
+  if(BAN){toast(BAN_MSG);haptic("error");return}
   const issue=rangeIssue(rg.s,rg.e);if(issue){toast(issue);haptic("error");return}
-  const sel=document.querySelector(".slot.sel"),go=document.getElementById("sGo");
-  const rc=(sel||go).getBoundingClientRect();burst(rc.left+rc.width/2,rc.top+rc.height/2);
-  haptic("success");
-  send({a:"book",r:ROOMS[S.r].id,d:dkey(S.d),s:rg.s,e:rg.e,sh:S.share?1:0});
+  openFlow();
 }
+function openFlow(){
+  const rg=range(),room=ROOMS[S.r],d=dayDate(S.d);
+  F.open=true;F.cup=null;F.team=null;F.ok=false;
+  $("fWhat").textContent=room.em+" "+room.name+" · "+d.getDate()+" "+MG[d.getMonth()]+" · "+hh(rg.s)+"–"+hh(rg.e);
+  $("fGo").textContent="Записаться "+hh(rg.s)+"–"+hh(rg.e);
+  showStep("stCup");paintFlow();
+  if(inTg){try{tg.MainButton.hide()}catch(e){}}
+  $("flow").classList.add("on");haptic("sel");
+}
+function closeFlow(){F.open=false;$("flow").classList.remove("on");closeRules();renderSheet()}
+function showStep(id){["stCup","stRules"].forEach(k=>$(k).classList.toggle("on",k===id))}
+function paintFlow(){
+  $("cupYes").setAttribute("aria-pressed",String(F.cup===true));
+  $("cupNo").setAttribute("aria-pressed",String(F.cup===false));
+  $("teams").hidden=F.cup!==true;
+  $("teams").querySelectorAll(".opt").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.t===F.team)));
+  $("cupNext").disabled=!(F.cup===false||(F.cup===true&&F.team));
+  $("agree").setAttribute("aria-checked",String(F.ok));
+  $("fGo").disabled=!F.ok;
+}
+TEAMS.forEach(t=>{const b=document.createElement("button");b.className="opt";b.dataset.t=t;b.textContent=t;b.setAttribute("aria-pressed","false");
+  b.onclick=()=>{F.team=t;haptic("sel");paintFlow()};$("teams").appendChild(b)});
+$("cupYes").onclick=()=>{F.cup=true;haptic("sel");paintFlow()};
+$("cupNo").onclick=()=>{F.cup=false;F.team=null;haptic("sel");paintFlow();setTimeout(()=>{if(F.open&&F.cup===false)toRules()},260)};
+$("cupNext").onclick=()=>{if(!$("cupNext").disabled)toRules()};
+function toRules(){showStep("stRules");paintFlow()}
+$("rulesBack").onclick=()=>{showStep("stCup");haptic("sel")};
+$("agree").onclick=()=>{F.ok=!F.ok;haptic(F.ok?"success":"sel");paintFlow()};
+$("fX").onclick=closeFlow;$("fBd").onclick=closeFlow;
+function openRules(){$("rv").classList.add("on");$("rv").scrollTop=0;haptic("sel")}
+function closeRules(){$("rv").classList.remove("on")}
+$("openRules").onclick=openRules;$("rvX").onclick=closeRules;$("rvOk").onclick=()=>{closeRules();haptic("sel")};
+document.addEventListener("click",e=>{const a=e.target.closest("a[data-tg]");if(!a)return;e.preventDefault();
+  try{if(tg&&tg.openTelegramLink){tg.openTelegramLink(a.href);return}}catch(_){}window.open(a.href,"_blank")});
+$("fGo").onclick=()=>{
+  const rg=range();if(!rg||!F.ok)return;
+  const rc=$("fGo").getBoundingClientRect();burst(rc.left+rc.width/2,rc.top+rc.height/2);
+  haptic("success");
+  const msg={a:"book",r:ROOMS[S.r].id,d:dkey(S.d),s:rg.s,e:rg.e,sh:S.share?1:0,ok:1};
+  if(F.cup&&F.team)msg.cup=F.team;
+  send(msg);
+  if(!inTg)setTimeout(closeFlow,900);
+};
 function renderMine(){
   const mine=B.filter(b=>b.me&&!(b.d===0&&b.e<=D.h)).sort((a,b)=>a.d-b.d||a.s-b.s);
   document.getElementById("mineCnt").textContent=mine.length?mine.length:"";
@@ -578,7 +779,7 @@ function renderMine(){
     card.innerHTML='<div class="em"></div><div><div class="w"></div><div class="m"></div></div><button class="x">Отменить</button>';
     card.querySelector(".em").textContent=r.em;
     card.querySelector(".w").textContent=hh(b.s)+"–"+hh(b.e)+" · "+r.name;
-    card.querySelector(".m").textContent=rel+", "+d.getDate()+" "+MG[d.getMonth()]+" · "+(b.sh?"🤝 делитесь":"🔒 только вы");
+    card.querySelector(".m").textContent=rel+", "+d.getDate()+" "+MG[d.getMonth()]+" · "+(b.sh?"🤝 делитесь":"🔒 только вы")+(b.cup?" · 🏆 "+b.cup:"");
     const x=card.querySelector(".x");
     x.onclick=()=>{
       if(!x.classList.contains("armed")){x.classList.add("armed");x.textContent="Точно?";haptic("warning");
@@ -599,7 +800,7 @@ function render(){
   document.getElementById("tabMine").setAttribute("aria-selected",String(S.tab==="mine"));
   document.getElementById("vSched").hidden=S.tab!=="sched";
   document.getElementById("vMine").hidden=S.tab!=="mine";
-  renderRooms();renderDays();renderTimeline();renderMine();renderSheet();paintKeys();
+  renderNote();renderRooms();renderDays();renderTimeline();renderMine();renderSheet();paintKeys();
 }
 // цвет ключика меняется сразу вместе с помещением: просто переключаем ссылку на нужный градиент
 function paintKeys(){const g="url(#kg_"+ROOMS[S.r].id+")";document.querySelectorAll(".ink").forEach(e=>{if(e.getAttribute("fill")!==g)e.setAttribute("fill",g)})}
@@ -640,7 +841,7 @@ document.getElementById("logo").onclick=e=>{
   haptic("sel");say(KEY_LINES[lineIdx++%KEY_LINES.length]);
 };
 
-document.getElementById("chair").onclick=()=>{haptic("sel");const url="https://t.me/Yolyich";
+document.getElementById("chair").onclick=()=>{haptic("sel");const url=CHAIR;
   try{if(tg&&tg.openTelegramLink){tg.openTelegramLink(url);return}}catch(e){}window.open(url,"_blank")};
 
 applyTheme();
