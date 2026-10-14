@@ -199,7 +199,7 @@ body[data-room="st"] .empty .mini svg{filter:drop-shadow(0 0 10px rgba(31,216,25
 .flow.on .bd{opacity:1}
 .card{position:relative;width:100%;max-width:560px;max-height:92vh;overflow:auto;border-radius:26px 26px 0 0;padding:18px 18px calc(18px + env(safe-area-inset-bottom,0px));
   background:linear-gradient(180deg,#1A1029,#120A1E);border-top:1px solid color-mix(in srgb,var(--a1) 60%,transparent);
-  box-shadow:0 -14px 50px color-mix(in srgb,var(--a1) 25%,transparent);transform:translateY(105%);transition:transform .5s var(--ease)}
+  box-shadow:0 -14px 50px color-mix(in srgb,var(--a1) 25%,transparent);transform:translateY(105%);transition:transform .45s cubic-bezier(.22,1,.36,1)}
 .flow.on .card{transform:none}
 .card .grab{width:40px;height:4px;border-radius:4px;background:rgba(255,255,255,.2);margin:-6px auto 12px}
 .card .x{position:absolute;right:12px;top:10px;width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.07);font-size:16px;color:var(--hint)}
@@ -268,8 +268,9 @@ body[data-room="st"] .empty .mini svg{filter:drop-shadow(0 0 10px rgba(31,216,25
 .sheet{position:fixed;left:0;right:0;bottom:0;z-index:5;padding:14px 16px calc(14px + env(safe-area-inset-bottom,0px));
   background:rgba(18,10,30,.72);backdrop-filter:blur(22px) saturate(1.4);-webkit-backdrop-filter:blur(22px) saturate(1.4);
   border-top:1px solid transparent;border-image:var(--grad) 1;box-shadow:0 -10px 40px color-mix(in srgb,var(--a1) 22%,transparent);
-  transform:translateY(115%);transition:transform .5s var(--ease)}
+  transform:translateY(115%);transition:transform .45s cubic-bezier(.22,1,.36,1)}
 .sheet.on{transform:none}
+.sheet::after{content:"";position:absolute;left:0;right:0;top:calc(100% - 1px);height:80px;background:#120A1E;pointer-events:none}
 .sheet .in{max-width:560px;margin:0 auto;display:flex;flex-direction:column;gap:11px}
 .sheet .line1{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
 .sheet .rng{font-family:var(--display);font-weight:800;font-size:22px;font-variant-numeric:tabular-nums;
@@ -283,7 +284,7 @@ body[data-room="st"] .empty .mini svg{filter:drop-shadow(0 0 10px rgba(31,216,25
 .share[aria-checked="true"] .sw{background:var(--grad);box-shadow:0 0 12px var(--a1)}
 .share[aria-checked="true"] .sw::after{transform:translateX(19px)}
 .share[aria-disabled="true"]{opacity:.85}
-.go{background:var(--grad);background-size:200% 100%;color:#fff;border-radius:14px;padding:14px;font-weight:600;font-size:15px;text-align:center;box-shadow:var(--glow)}
+.go{background:linear-gradient(90deg,var(--a1),var(--a2),var(--a1));background-size:200% 100%;color:#fff;border-radius:14px;padding:14px;font-weight:600;font-size:15px;text-align:center;box-shadow:var(--glow)}
 .go.hidden{display:none}
 
 .toast{position:fixed;left:50%;top:calc(12px + env(safe-area-inset-top,0px));transform:translate(-50%,-160%) scale(.9);z-index:9;
