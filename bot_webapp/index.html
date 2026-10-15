@@ -135,6 +135,16 @@ body[data-room="st"] .empty .mini svg{filter:drop-shadow(0 0 10px rgba(31,216,25
   transition:transform .2s var(--ease),background .3s,border-color .3s,box-shadow .3s}
 .slot .lb{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .slot .ic{flex:none}
+/* админ: кнопка отмены чужой записи прямо на часе */
+.slot .admx{margin-left:auto;flex:none;width:30px;height:28px;margin-right:-6px;border-radius:9px;display:grid;place-items:center;font-size:13px;
+  background:rgba(255,59,92,.16);border:1px solid rgba(255,59,92,.5);box-shadow:0 0 10px rgba(255,59,92,.25)}
+.admrow{display:flex;align-items:center;gap:12px;padding:12px 0;border-top:1px solid var(--line)}
+.admrow:first-child{border-top:0}
+.admrow .tx{flex:1;min-width:0}
+.admrow b{display:block;font-size:14.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.admrow .tx span{font-size:12.5px;color:var(--hint)}
+.admrow .del{flex:none;border:1px solid rgba(255,59,92,.55);border-radius:11px;padding:9px 12px;font-size:13px;font-weight:600;color:#FFC2CF;background:rgba(255,59,92,.1);transition:background .25s,box-shadow .25s,color .25s}
+.admrow .del.armed{background:#FF3B5C;color:#fff;box-shadow:0 0 14px #FF3B5C,0 0 30px rgba(255,59,92,.5)}
 .slot.free .lb{color:var(--hint)}
 @media (hover:hover){.slot.free:not(.past):hover{border-color:color-mix(in srgb,var(--a1) 60%,transparent);box-shadow:0 0 14px color-mix(in srgb,var(--a1) 25%,transparent)}}
 .slot.shared{border-style:solid;border-color:color-mix(in srgb,var(--a2) 70%,transparent);background:color-mix(in srgb,var(--a2) 14%,transparent);
@@ -446,6 +456,18 @@ html.boot .wrap{visibility:hidden}
   </div>
 </div>
 
+<div class="flow" id="adm" role="dialog" aria-modal="true" aria-labelledby="admTitle">
+  <div class="bd" id="admBd"></div>
+  <div class="card">
+    <div class="grab"></div>
+    <button class="x" id="admX" aria-label="Закрыть">✕</button>
+    <div class="what" id="admWhat"></div>
+    <h3 id="admTitle">Отменить запись</h3>
+    <p>Человеку придёт сообщение, что запись отменил администратор.</p>
+    <div id="admList"></div>
+  </div>
+</div>
+
 <div class="rv" id="rv" role="dialog" aria-modal="true" aria-label="Правила Творческой и СтСки">
   <div class="in">
     <button class="close" id="rvX" aria-label="Закрыть правила">✕</button>
@@ -698,6 +720,10 @@ function renderTimeline(){
     }
     b.setAttribute("aria-label",hh(h)+": "+(lb.textContent||"прошло"));
     b.append(ic,lb);b.onclick=()=>tapHour(h,b);
+    if(D.adm&&x.over&&x.over.some(o=>!o.me)){
+      const del=document.createElement("span");del.className="admx";del.setAttribute("role","button");del.setAttribute("aria-label","Отменить запись");del.textContent="🗑";
+      del.onclick=e=>{e.stopPropagation();openAdm(h)};b.appendChild(del);
+    }
     row.append(t,b);tl.appendChild(row);
   }
 }
@@ -764,6 +790,28 @@ $("fX").onclick=closeFlow;$("fBd").onclick=closeFlow;
   grab.addEventListener("pointermove",e=>{if(y0===null)return;dy=Math.max(0,e.clientY-y0);card.style.transform="translateY("+dy+"px)"});
   const end=()=>{if(y0===null)return;y0=null;card.classList.remove("drag");card.style.transform="";if(dy>70)closeFlow()};
   grab.addEventListener("pointerup",end);grab.addEventListener("pointercancel",end);})();
+/* ---------- админ: отмена чужой записи ---------- */
+function openAdm(h){
+  const room=ROOMS[S.r],d=dayDate(S.d),list=$("admList");list.textContent="";
+  const items=B.filter(b=>b.r===S.r&&b.d===S.d&&b.s<=h&&h<b.e&&!b.me);
+  $("admWhat").textContent=room.em+" "+room.name+" · "+d.getDate()+" "+MG[d.getMonth()]+" · "+hh(h);
+  items.forEach(b=>{
+    const row=document.createElement("div");row.className="admrow";
+    row.innerHTML='<div class="tx"><b></b><span></span></div><button class="del">Отменить</button>';
+    row.querySelector("b").textContent=(b.cup?"🏆 "+b.cup+" · ":"")+b.nm;
+    row.querySelector("span").textContent=hh(b.s)+"–"+hh(b.e)+" · "+(b.sh?"🤝 делится":"🔒 целиком");
+    const x=row.querySelector(".del");
+    x.onclick=()=>{
+      if(!x.classList.contains("armed")){x.classList.add("armed");x.textContent="Точно?";haptic("warning");
+        clearTimeout(x.t);x.t=setTimeout(()=>{x.classList.remove("armed");x.textContent="Отменить"},3500);return}
+      haptic("success");send({a:"acancel",id:b.id});if(!inTg)setTimeout(closeAdm,600);
+    };
+    list.appendChild(row);
+  });
+  $("adm").classList.add("on");haptic("sel");
+}
+function closeAdm(){$("adm").classList.remove("on")}
+$("admX").onclick=closeAdm;$("admBd").onclick=closeAdm;
 function openRules(){$("rv").classList.add("on");$("rv").scrollTop=0;haptic("sel")}
 function closeRules(){$("rv").classList.remove("on")}
 $("openRules").onclick=openRules;$("rvX").onclick=closeRules;$("rvOk").onclick=()=>{closeRules();haptic("sel")};
