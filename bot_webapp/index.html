@@ -748,7 +748,7 @@ function paintFlow(){
 TEAMS.forEach(t=>{const b=document.createElement("button");b.className="opt";b.dataset.t=t;b.textContent=t;b.setAttribute("aria-pressed","false");
   b.onclick=()=>{F.team=t;haptic("sel");paintFlow()};$("teams").appendChild(b)});
 $("cupYes").onclick=()=>{F.cup=true;haptic("sel");paintFlow()};
-$("cupNo").onclick=()=>{F.cup=false;F.team=null;haptic("sel");paintFlow();setTimeout(()=>{if(F.open&&F.cup===false)toRules()},260)};
+$("cupNo").onclick=()=>{F.cup=false;F.team=null;haptic("sel");paintFlow()};
 $("cupNext").onclick=()=>{if(!$("cupNext").disabled)toRules()};
 function toRules(){showStep("stRules");paintFlow()}
 $("rulesBack").onclick=()=>{showStep("stCup");haptic("sel")};
