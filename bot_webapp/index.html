@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ru">
+<html lang="ru" class="boot">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
@@ -231,9 +231,11 @@ body[data-room="st"] .empty .mini svg{filter:drop-shadow(0 0 10px rgba(31,216,25
 .cb{flex:none;width:28px;height:28px;border-radius:9px;border:2px solid rgba(255,255,255,.35);display:grid;place-items:center;transition:background .3s,border-color .3s,box-shadow .3s,transform .3s var(--ease)}
 .cb svg{width:18px;height:18px;overflow:visible}
 .cb path{fill:none;stroke:#fff;stroke-width:3.2;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:24;stroke-dashoffset:24;transition:stroke-dashoffset .35s ease .08s}
-.agree[aria-checked="true"] .cb{background:var(--grad);border-color:transparent;box-shadow:var(--glow);animation:pop .45s var(--ease)}
+.agree[aria-checked="true"] .cb{background:var(--grad);border-color:transparent;box-shadow:var(--glow);animation:cbpop .45s var(--ease)}
 .agree[aria-checked="true"] .cb path{stroke-dashoffset:0}
-@keyframes pop{0%{transform:scale(.7)}60%{transform:scale(1.18)}100%{transform:scale(1)}}
+@keyframes cbpop{0%{transform:scale(.7)}60%{transform:scale(1.18)}100%{transform:scale(1)}}
+/* до загрузки шрифтов экран не показываем — иначе текст перестраивается прямо во время анимации */
+html.boot .wrap{visibility:hidden}
 
 /* ── правила: окно в фирменном оранжевом стиле ── */
 .rv{position:fixed;inset:0;z-index:15;overflow:auto;-webkit-overflow-scrolling:touch;visibility:hidden;opacity:0;transform:translateY(30px);
@@ -337,12 +339,13 @@ body[data-room="st"] .empty .mini svg{filter:drop-shadow(0 0 10px rgba(31,216,25
   .refresh:active .ar{transition:transform .5s var(--ease);transform:rotate(-360deg)}
   .room:active,.day:active{transform:scale(.94)}
   .slot:active:not(.busy):not(.past){transform:scale(.97)}
-  .rooms.enter .room{animation:rise .55s var(--ease) both;animation-delay:calc(var(--i,0) * 35ms)}
-  .tl.enter,.list.enter{animation:fade .16s ease-out both}
-  @keyframes fade{from{opacity:.35}}
-  @keyframes rise{from{opacity:0;transform:translateY(12px)}}
-  .days.enter .day{animation:pop .5s var(--ease) both;animation-delay:calc(var(--i,0) * 40ms)}
-  @keyframes pop{from{opacity:0;transform:scale(.6)}}
+  /* открытие: всё мягко выплывает снизу по очереди, без отскоков */
+  .rooms.enter .room{animation:rise .5s cubic-bezier(.22,1,.36,1) both;animation-delay:calc(var(--i,0) * 50ms)}
+  .days.enter .day{animation:rise .5s cubic-bezier(.22,1,.36,1) both;animation-delay:calc(100ms + var(--i,0) * 30ms)}
+  .tl.first .row{animation:rise .5s cubic-bezier(.22,1,.36,1) both;animation-delay:calc(180ms + var(--i,0) * 25ms)}
+  .tl.enter:not(.first),.list.enter{animation:fade .22s ease-out both}
+  @keyframes fade{from{opacity:0}}
+  @keyframes rise{from{opacity:0;transform:translate3d(0,10px,0)}}
   .rip{animation:rip .6s ease-out forwards}
   @keyframes rip{to{transform:scale(2.6);opacity:0}}
   .shake{animation:sh .4s}
@@ -655,7 +658,7 @@ function renderDays(){
   }
 }
 function renderTimeline(){
-  const d=dayDate(S.d),tl=document.getElementById("tl");tl.textContent="";tl.classList.toggle("enter",A.tl);
+  const d=dayDate(S.d),tl=document.getElementById("tl");tl.textContent="";tl.classList.toggle("enter",A.tl);tl.classList.toggle("first",A.rooms);
   const rel=S.d===0?"сегодня, ":S.d===1?"завтра, ":"";
   document.getElementById("dTitle").textContent=rel+d.getDate()+" "+MG[d.getMonth()];
   if(closed.has(S.r+":"+S.d)){
@@ -843,9 +846,16 @@ document.getElementById("chair").onclick=()=>{haptic("sel");const url=CHAIR;
 applyTheme();
 document.getElementById("stamp").textContent=D.demo?"Студгородок · пример":"Студгородок · данные на "+D.ts;
 document.getElementById("demo").hidden=!D.demo;
-render();
-// прокрутить ленту дней к выбранному
-const sel=document.querySelector(".day[aria-pressed='true']");if(sel&&sel.scrollIntoView)sel.scrollIntoView({inline:"center",block:"nearest"});
+// первый показ — только когда шрифты готовы (но не дольше 900 мс), чтобы анимация не дёргалась
+let booted=false;
+function boot(){if(booted)return;booted=true;
+  render();
+  // прокрутить ленту дней к выбранному
+  const sel=document.querySelector(".day[aria-pressed='true']");if(sel&&sel.scrollIntoView)sel.scrollIntoView({inline:"center",block:"nearest"});
+  requestAnimationFrame(()=>document.documentElement.classList.remove("boot"));
+}
+try{document.fonts.ready.then(boot)}catch(e){}
+setTimeout(boot,900);
 })();
 </script>
 </body>
