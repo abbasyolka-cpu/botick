@@ -193,15 +193,21 @@ body[data-room="st"] .empty .mini svg{filter:drop-shadow(0 0 10px rgba(31,216,25
 .slot.early{opacity:.42;cursor:not-allowed;border-style:dashed}
 
 /* ── окно перед записью: Кубок → правила ── */
-.flow{position:fixed;inset:0;z-index:12;display:flex;align-items:flex-end;justify-content:center;visibility:hidden;pointer-events:none}
-.flow.on{visibility:visible;pointer-events:auto}
+.flow{position:fixed;inset:0;z-index:12;display:flex;align-items:flex-end;justify-content:center;visibility:hidden;pointer-events:none;transition:visibility 0s .45s}
+.flow.on{visibility:visible;pointer-events:auto;transition:visibility 0s}
+.card.drag{transition:none}
 .flow .bd{position:absolute;inset:0;background:rgba(6,3,12,.62);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);opacity:0;transition:opacity .35s}
 .flow.on .bd{opacity:1}
 .card{position:relative;width:100%;max-width:560px;max-height:92vh;overflow:auto;border-radius:26px 26px 0 0;padding:18px 18px calc(18px + env(safe-area-inset-bottom,0px));
   background:linear-gradient(180deg,#1A1029,#120A1E);border-top:1px solid color-mix(in srgb,var(--a1) 60%,transparent);
   box-shadow:0 -14px 50px color-mix(in srgb,var(--a1) 25%,transparent);transform:translateY(105%);transition:transform .45s cubic-bezier(.22,1,.36,1)}
 .flow.on .card{transform:none}
-.card .grab{width:40px;height:4px;border-radius:4px;background:rgba(255,255,255,.2);margin:-6px auto 12px}
+.card .grab{width:60px;height:20px;margin:-14px auto 4px;position:relative;touch-action:none;cursor:grab}
+.card .grab::before{content:"";position:absolute;left:10px;right:10px;top:8px;height:4px;border-radius:4px;background:rgba(255,255,255,.2)}
+/* закрытие — быстрее и с разгоном, открытие — с мягким торможением */
+.flow .card{transition:transform .32s cubic-bezier(.5,0,.75,0)}
+.flow.on .card{transition:transform .45s cubic-bezier(.22,1,.36,1)}
+.flow .card.drag{transition:none}
 .card .x{position:absolute;right:12px;top:10px;width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.07);font-size:16px;color:var(--hint)}
 .card .what{font-family:var(--mono);font-size:11.5px;color:var(--hint);letter-spacing:.02em;padding-right:40px}
 .card h3{font-family:var(--display);font-weight:800;font-size:19px;line-height:1.2;margin:8px 0 6px;text-wrap:balance}
@@ -752,6 +758,12 @@ function toRules(){showStep("stRules");paintFlow()}
 $("rulesBack").onclick=()=>{showStep("stCup");haptic("sel")};
 $("agree").onclick=()=>{F.ok=!F.ok;haptic(F.ok?"success":"sel");paintFlow()};
 $("fX").onclick=closeFlow;$("fBd").onclick=closeFlow;
+// окно можно смахнуть вниз за «ручку»
+(function(){const card=document.querySelector(".flow .card"),grab=card.querySelector(".grab");let y0=null,dy=0;
+  grab.addEventListener("pointerdown",e=>{y0=e.clientY;dy=0;card.classList.add("drag");grab.setPointerCapture(e.pointerId)});
+  grab.addEventListener("pointermove",e=>{if(y0===null)return;dy=Math.max(0,e.clientY-y0);card.style.transform="translateY("+dy+"px)"});
+  const end=()=>{if(y0===null)return;y0=null;card.classList.remove("drag");card.style.transform="";if(dy>70)closeFlow()};
+  grab.addEventListener("pointerup",end);grab.addEventListener("pointercancel",end);})();
 function openRules(){$("rv").classList.add("on");$("rv").scrollTop=0;haptic("sel")}
 function closeRules(){$("rv").classList.remove("on")}
 $("openRules").onclick=openRules;$("rvX").onclick=closeRules;$("rvOk").onclick=()=>{closeRules();haptic("sel")};
