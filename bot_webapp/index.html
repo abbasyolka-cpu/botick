@@ -207,8 +207,8 @@ body[data-room="st"] .empty .mini svg{filter:drop-shadow(0 0 10px rgba(31,216,25
 .card h3{font-family:var(--display);font-weight:800;font-size:19px;line-height:1.2;margin:8px 0 6px;text-wrap:balance}
 .card p{margin:0 0 14px;color:var(--hint);font-size:13.5px}
 .step{display:none}
-.step.on{display:block;animation:stepIn .45s var(--ease) both}
-@keyframes stepIn{from{opacity:0;transform:translateX(24px)}to{opacity:1;transform:none}}
+.step.on{display:block;animation:stepIn .35s cubic-bezier(.22,1,.36,1) both}
+@keyframes stepIn{from{opacity:0;transform:translateX(16px)}to{opacity:1;transform:none}}
 .yn{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .opt{padding:14px;border-radius:15px;background:rgba(255,255,255,.06);border:1px solid var(--line);font-weight:600;font-size:15px;transition:background .25s,border-color .25s,box-shadow .25s}
 .opt[aria-pressed="true"]{background:var(--grad);border-color:transparent;color:#fff;box-shadow:var(--glow)}
@@ -556,7 +556,7 @@ function send(obj){
 function applyTheme(){
   if(!tg)return;
   try{
-    tg.ready();tg.expand();
+    tg.ready();tg.expand();tg.disableVerticalSwipes&&tg.disableVerticalSwipes();
     tg.setHeaderColor&&tg.setHeaderColor("#0A0612");
     tg.setBackgroundColor&&tg.setBackgroundColor("#0A0612");
     tg.setBottomBarColor&&tg.setBottomBarColor("#0A0612");
@@ -707,14 +707,9 @@ function renderSheet(){
     S.share?"В это время смогут прийти другие, кто тоже делится":"🔒 Помещение в эти часы будет только вашим";
   const label="Записаться "+hh(rg.s)+"–"+hh(rg.e);
   sh.classList.add("on");
-  if(inTg){
-    document.getElementById("sGo").classList.add("hidden");
-    if(F.open){try{tg.MainButton.hide()}catch(e){}return}
-    try{
-      tg.MainButton.setParams({text:label,is_visible:true,is_active:true,
-        color:cssVar("--a1")||undefined,text_color:"#ffffff"});
-    }catch(e){tg.MainButton.setText(label);tg.MainButton.show()}
-  }else{const g=document.getElementById("sGo");g.classList.remove("hidden");g.textContent=label}
+  // кнопка всегда своя, внутри страницы: системная кнопка Telegram меняет высоту окна, и всё «подпрыгивает»
+  if(inTg){try{tg.MainButton.hide()}catch(e){}}
+  const g=document.getElementById("sGo");g.classList.remove("hidden");g.textContent=label
 }
 /* ---------- перед записью: Кубок первокурсников → правила ---------- */
 const F={open:false,cup:null,team:null,ok:false};
@@ -812,7 +807,7 @@ document.getElementById("tabMine").onclick=()=>{S.tab="mine";haptic("sel");rende
 document.getElementById("sShare").onclick=()=>{const rg=range();if(rg&&rangeHasShared(rg.s,rg.e)){toast("Тут уже делятся — только совместно");return}S.share=!S.share;haptic("sel");renderSheet()};
 document.getElementById("sGo").onclick=book;
 document.getElementById("refresh").onclick=()=>send({a:"refresh"});
-if(inTg){try{tg.MainButton.onClick(book)}catch(e){}}
+if(inTg){try{tg.MainButton.hide()}catch(e){}}
 
 /* ---------- ключик: пасхалки ---------- */
 const KEY_LINES=["Щёлк! Комната открыта 🔓","Творчество разблокировано ✨","Ключик говорит: «привет!» 👋","Без ключика — никуда 🗝","Ещё чуть-чуть, и откроется что-то секретное…","Вдохновение: 100% 💥","Кто-то сегодня явно сделает шедевр 🎨","Пилим, клеим, творим 🪚"];
