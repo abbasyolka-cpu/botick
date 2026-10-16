@@ -74,6 +74,7 @@ button{font:inherit;color:inherit;border:0;background:none;padding:0;cursor:poin
 .tabs{display:flex;gap:6px;margin-top:16px;border-bottom:2px solid var(--edge);overflow-x:auto;scrollbar-width:none}
 .tabs::-webkit-scrollbar{display:none}
 .tabs button{padding:9px 14px 8px;border:2px solid transparent;border-bottom:0;border-radius:12px 12px 0 0;font-weight:600;font-size:14px;color:var(--muted);white-space:nowrap;margin-bottom:-2px;transition:background .2s,color .2s}
+@media (max-width:380px){.tabs{gap:4px}.tabs button{padding:9px 10px 8px;font-size:13px}}
 .tabs button[aria-selected="true"]{background:var(--card);border-color:var(--ink);color:var(--ink)}
 .tabs .cnt{display:inline-grid;place-items:center;min-width:18px;height:18px;padding:0 5px;margin-left:5px;border-radius:9px;font-size:11px;background:var(--red);color:#fff;font-family:var(--mono)}
 .tabs .cnt:empty{display:none}
@@ -141,7 +142,7 @@ section{margin-top:14px}
 .wk .tm{font-size:10.5px;color:var(--muted);display:flex;align-items:center;justify-content:flex-end;padding-right:3px}
 .wk .c{height:28px;border-radius:5px;background:var(--paper);font-size:9px;display:flex;align-items:center;justify-content:center;overflow:hidden;white-space:nowrap;padding:0 2px;color:#fff;
   text-shadow:0 1px 1px rgba(0,0,0,.55)}
-.wk .c.q{background:repeating-linear-gradient(-45deg,var(--paper) 0 4px,var(--paper2) 4px 8px)}
+.wk .c.q{background:repeating-linear-gradient(-45deg,var(--paper) 0 4px,#2A221C 4px 8px)}
 .wk .c.me{outline:2.5px solid var(--red);outline-offset:-2.5px}
 .wnote{font-size:12.5px;color:var(--ink2);margin-top:10px}
 
@@ -349,7 +350,7 @@ function myAttention(){let n=0;(D.dy||[]).forEach((dd,i)=>{if(i>=1&&dd.p.include
 /* ---------- экран ---------- */
 function render(){
   const app=$("app");app.textContent="";
-  const T=[["day","Расписание"],["mine","Мои записи"]];if(ADM)T.push(["adm","Админ"]);
+  const T=[["day","Расписание"],["week","Неделя"],["mine","Мои записи"]];if(ADM)T.push(["adm","Админ"]);
   const tabs=document.createElement("div");tabs.className="tabs";tabs.setAttribute("role","tablist");
   T.forEach(([k,l])=>{const b=document.createElement("button");b.setAttribute("role","tab");b.setAttribute("aria-selected",String(S.tab===k));b.textContent=l;
     const n=k==="mine"?myAttention():k==="adm"?(D.rq||[]).length:0;
@@ -547,7 +548,7 @@ function renderWeek(sec){
   }
   card.appendChild(g);sec.appendChild(card);
   const n=document.createElement("div");n.className="wnote";
-  n.textContent="Постоянное расписание на семестр — как в таблице клуба, в тех же цветах. Нажмите на клетку, чтобы увидеть, чьё время. Штриховка — тихие часы."+(D.sync?" Таблица прочитана в "+D.sync+".":"");
+  n.textContent=(D.wk&&D.wk.length?"Постоянное расписание на семестр — как в таблице клуба, в тех же цветах. Нажмите на клетку, чтобы увидеть, чьё время. ":"Постоянных записей пока нет — всё время свободно, занимайте во вкладке «Расписание». ")+"Штриховка — тихие часы (будни 9–16).";
   sec.appendChild(n);
 }
 function short(n){const p=n.replace(/[«»"]/g,"").split(/\s+/).filter(Boolean);if(!p.length)return"";return p.length===1?p[0].slice(0,5):p[0].slice(0,4)}
