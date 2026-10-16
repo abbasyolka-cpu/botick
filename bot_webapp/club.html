@@ -75,6 +75,7 @@ button{font:inherit;color:inherit;border:0;background:none;padding:0;cursor:poin
 .tabs::-webkit-scrollbar{display:none}
 .tabs button{padding:9px 14px 8px;border:2px solid transparent;border-bottom:0;border-radius:12px 12px 0 0;font-weight:600;font-size:14px;color:var(--muted);white-space:nowrap;margin-bottom:-2px;transition:background .2s,color .2s}
 @media (max-width:380px){.tabs{gap:4px}.tabs button{padding:9px 10px 8px;font-size:13px}}
+.tabs.t4{gap:4px}.tabs.t4 button{padding:9px 11px 8px}
 .tabs button[aria-selected="true"]{background:var(--card);border-color:var(--ink);color:var(--ink)}
 .tabs .cnt{display:inline-grid;place-items:center;min-width:18px;height:18px;padding:0 5px;margin-left:5px;border-radius:9px;font-size:11px;background:var(--red);color:#fff;font-family:var(--mono)}
 .tabs .cnt:empty{display:none}
@@ -167,6 +168,11 @@ section{margin-top:14px}
 input,textarea{width:100%;font:inherit;font-size:16px;color:var(--ink);background:var(--paper);border:1.5px solid var(--edge);border-radius:12px;padding:12px}
 input:focus{outline:none;border-color:var(--org);box-shadow:3px 3px 0 var(--sh)}
 input::placeholder{color:var(--muted)}
+textarea{resize:none;min-height:74px;line-height:1.4;display:block}
+textarea:focus{outline:none;border-color:var(--org);box-shadow:3px 3px 0 var(--sh)}
+.hint{margin:8px 2px 0;padding:9px 11px;border-radius:11px;font-size:12.5px;line-height:1.4;background:rgba(255,106,43,.1);border:1px solid rgba(255,106,43,.35);color:var(--ink)}
+.hint.warn{background:rgba(255,106,43,.2);border-color:var(--org)}
+.rqc{margin-top:6px;font-size:13px;color:var(--ink2);font-style:italic}
 .lbl{font-size:12.5px;color:var(--ink2);margin:12px 2px 6px;display:block}
 .rules{font-size:14px;line-height:1.55;white-space:pre-wrap}
 .rules b{color:var(--red)}
@@ -235,6 +241,7 @@ input::placeholder{color:var(--muted)}
 .rv .eb{font-family:var(--mono);font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--r-hi)}
 .rv h2{font-family:var(--display);font-weight:400;font-size:26px;line-height:1.1;margin:0}
 .rv .facts{display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%;margin-top:4px}
+.rv .fc.wide{grid-column:1/-1}
 .rv .fc{padding:10px 12px;border-radius:13px;background:rgba(0,0,0,.2);border:1px solid var(--r-line);text-align:left}
 .rv .fc b{display:block;font-size:13.5px}
 .rv .fc>span{font-size:12px;color:var(--r-muted);line-height:1.35;display:block;margin-top:2px}
@@ -281,7 +288,7 @@ input::placeholder{color:var(--muted)}
     <svg viewBox="0 0 885 354" aria-hidden="true"><defs><linearGradient id="rvg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFF6EE"/><stop offset=".55" stop-color="#FFD2AE"/><stop offset="1" stop-color="#FF9A5C"/></linearGradient></defs><path fill="url(#rvg)" fill-rule="evenodd" d="M186,0C62,0 0,64 0,177C0,290 62,354 186,354C292,354 356,300 372,226H539V320H627V236L668,320H708L748,236V320H837V226H885V131H722L688,204L655,131H372C356,54 292,0 186,0ZM177,131H199Q233,131 233,165V185Q233,219 199,219H177Q143,219 143,185V165Q143,131 177,131Z"/></svg>
     <div class="eb">Студсовет общежитий · музклуб</div>
     <h2>Правила музклуба</h2>
-    <div class="facts"><div class="fc"><b>🤫 Тихие часы</b><span>будни 9:00–16:00: без барабанов и громкого звука</span></div><div class="fc"><b>⏰ До <span id="rvDl">23</span>:00 накануне</b><span>подтверди, что придёшь, иначе время освободится</span></div></div>
+    <div class="facts"><div class="fc"><b>🤫 Тихие часы</b><span>будни 9:00–16:00: без барабанов и громкого звука</span></div><div class="fc"><b>⏰ До <span id="rvDl">23</span>:00 накануне</b><span>подтверди, что придёшь, иначе время освободится</span></div><div class="fc wide"><b>⏱ До 2 часов за раз</b><span>на одного человека и до 4 часов на коллектив — иначе заявку не одобрят. Нужно больше — напиши причину в комментарии к записи</span></div></div>
   </div>
   <div class="body" id="rvBody"></div>
   <button class="ok" id="rvOk">Прочитал(а), согласен(на) ✓</button>
@@ -350,8 +357,8 @@ function myAttention(){let n=0;(D.dy||[]).forEach((dd,i)=>{if(i>=1&&dd.p.include
 /* ---------- экран ---------- */
 function render(){
   const app=$("app");app.textContent="";
-  const T=[["day","Расписание"],["week","Неделя"],["mine","Мои записи"]];if(ADM)T.push(["adm","Админ"]);
-  const tabs=document.createElement("div");tabs.className="tabs";tabs.setAttribute("role","tablist");
+  const T=[["day","Расписание"],["week","Неделя"],["mine",ADM?"Мои":"Мои записи"]];if(ADM)T.push(["adm","Админ"]);
+  const tabs=document.createElement("div");tabs.className="tabs"+(T.length>3?" t4":"");tabs.setAttribute("role","tablist");
   T.forEach(([k,l])=>{const b=document.createElement("button");b.setAttribute("role","tab");b.setAttribute("aria-selected",String(S.tab===k));b.textContent=l;
     const n=k==="mine"?myAttention():k==="adm"?(D.rq||[]).length:0;
     if(n){const c=document.createElement("span");c.className="cnt";c.textContent=n;b.appendChild(c)}
@@ -454,6 +461,8 @@ function openBook(){
   if(ADM){haptic("success");send({a:"cb",d:dkey(S.d),hs:[...S.sel].sort((a,b)=>a-b)});return}
   sheet('<h3>Заявка в музклуб</h3><p>'+esc(selInfo())+'</p>'+(q?'<p>🤫 Часть времени — тихие часы: без барабанов и громкого звука.</p>':'')+
     '<label class="lbl" for="fio">Ваше ФИО (бот запомнит, но поменять можно в любой момент)</label><input id="fio" autocomplete="name" maxlength="80" placeholder="Фамилия Имя Отчество">'+
+    '<label class="lbl" for="bkC">Комментарий '+(S.sel.size>2?'<b style="color:var(--org)">— обязательно</b>':'(по желанию)')+'</label><textarea id="bkC" maxlength="300" placeholder="Например: репетиция группы «…» перед концертом"></textarea>'+
+    (S.sel.size>2?'<div class="hint warn">⏱ Вы выбрали '+S.sel.size+' ч. За раз можно до 2 часов на человека и до 4 на коллектив. Напишите в комментарии, почему нужно больше (или что вы коллектив), — иначе заявку не одобрят.</div>':'<div class="hint">⏱ За раз — до 2 часов на человека, до 4 на коллектив.</div>')+
     '<button class="rulesbtn" id="bkRules"><span class="bk">📖</span><span><b>Правила музклуба</b><small>Прочитайте перед записью</small></span><span class="arr">›</span></button>'+
     '<button class="agree" id="bkAgree" role="checkbox" aria-checked="false"><span class="cb"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><span class="tx">Я прочитал(а) правила и согласен(на) с ними</span></button>'+
     '<div class="acts"><button class="btn green off" id="bkGo">Отправить заявку</button></div><p>Ответственный за клуб рассмотрит заявку — ответ придёт в чат с ботом.</p>',
@@ -463,10 +472,11 @@ function openBook(){
       const agree=()=>{B.read=true;B.ok=true;paint();haptic("success")};
       $("bkRules").onclick=()=>openRules(agree);
       ag.onclick=()=>{if(!B.read&&!B.ok){openRules(agree);return}B.ok=!B.ok;paint();haptic(B.ok?"success":"sel")};
-      go.onclick=()=>{const v=f.value.trim().replace(/\s+/g," ");
+      go.onclick=()=>{const v=f.value.trim().replace(/\s+/g," "),cm=$("bkC").value.trim().replace(/\s+/g," ");
         if(v.split(" ").length<2){toast("Напишите хотя бы фамилию и имя");haptic("warning");f.focus();return}
+        if(S.sel.size>2&&cm.length<3){toast("Больше 2 часов — напишите причину в комментарии");haptic("warning");$("bkC").focus();return}
         if(!B.ok){toast("Сначала согласитесь с правилами клуба");haptic("warning");ag.classList.remove("nudge");void ag.offsetWidth;ag.classList.add("nudge");return}
-        store.set("club_fio",v);haptic("success");send({a:"cb",d:dkey(S.d),hs:[...S.sel].sort((a,b)=>a-b),fio:v})}});
+        store.set("club_fio",v);haptic("success");send({a:"cb",d:dkey(S.d),hs:[...S.sel].sort((a,b)=>a-b),fio:v,c:cm})}});
 }
 function openNick(){
   sheet('<h3>Записать человека</h3><p>'+esc(selInfo())+'</p><label class="lbl" for="nk">Ник в Telegram</label><input id="nk" placeholder="@username" autocapitalize="off" autocomplete="off">'+
@@ -485,18 +495,24 @@ function openClose(){
 }
 function adminHour(h,x){
   const d=dayDate(S.d),when=WD[d.getDay()]+", "+d.getDate()+" "+MG[d.getMonth()]+" · "+hh(h);
-  let body='<h3>'+esc(x.who||"Запись")+'</h3><p>'+esc(when)+' · '+({conf:"придёт ✓",wait:"ещё не ответил(а)",once:"разовая запись",pend:"заявка на рассмотрении",ext:"постоянно (внешники)",busy:"занято по таблице",event:"закрыто"}[x.st]||"")+'</p><div class="acts">';
   const rq=x.st==="pend"?(D.rq||[]).find(r=>r[1]===S.d&&r[2].split(",").map(Number).includes(h)):null;
+  const can=!!rq||["conf","wait","once"].includes(x.st);
+  let body='<h3>'+esc(x.who||"Запись")+'</h3><p>'+esc(when)+' · '+({conf:"придёт ✓",wait:"ещё не ответил(а)",once:"разовая запись",pend:"заявка на рассмотрении",ext:"постоянно (внешники)",busy:"занято по таблице",event:"закрыто"}[x.st]||"")+
+    (rq?' · '+rangesText(rq[2].split(",").map(Number)):'')+'</p>';
+  if(rq&&rq[4])body+='<div class="rqc">💬 '+esc(rq[4])+'</div>';
+  if(can)body+='<label class="lbl" for="rsn">Причина отказа или отмены — придёт человеку (можно оставить пустым)</label><textarea id="rsn" maxlength="300" placeholder="Например: в это время репетиция к КП"></textarea>';
+  body+='<div class="acts">';
   if(rq)body+='<button class="btn green" data-a="ok">✓ Одобрить</button><button class="btn red" data-a="no">✕ Отклонить</button>';
   if(["conf","wait","once"].includes(x.st))body+='<button class="btn red" data-a="cx">🗑 Отменить запись</button>';
   if(x.st==="event"&&x.ev)body+='<button class="btn ink" data-a="op">Открыть время</button>';
-  if(x.st==="ext"||x.st==="busy")body+='<p>Это время из таблицы. Поменять владельца — «⚙️ Админка» → «🎸 Музклуб» → «🎨 Цвета таблицы».</p>';
   body+='</div>';
+  if(x.st==="ext"||x.st==="busy")body+='<p>Это время из таблицы. Поменять владельца — «⚙️ Админка» → «🎸 Музклуб» → «🎨 Цвета таблицы».</p>';
   sheet(body,()=>{$("shBody").querySelectorAll("[data-a]").forEach(b=>b.onclick=()=>{const a=b.dataset.a;
     if(a==="cx"&&!b.classList.contains("armed")){b.classList.add("armed");b.textContent="Точно отменить?";haptic("warning");return}
     haptic("success");
-    if(a==="ok"||a==="no")send({a:"cq",id:rq[0],ok:a==="ok"?1:0});
-    else if(a==="cx")send({a:"cax",d:dkey(S.d),h});
+    const r=$("rsn")?$("rsn").value.trim().replace(/\s+/g," "):"";
+    if(a==="ok"||a==="no")send({a:"cq",id:rq[0],ok:a==="ok"?1:0,r:a==="no"?r:""});
+    else if(a==="cx")send({a:"cax",d:dkey(S.d),h,r});
     else if(a==="op")send({a:"cop",id:x.ev});})});
 }
 
@@ -603,9 +619,11 @@ function renderAdmin(sec){
   const h=document.createElement("div");h.className="card";
   h.innerHTML='<h3>📥 Заявки на запись</h3>'+(rq.length?'':'<p style="margin:6px 0 0;color:var(--ink2)">Новых заявок нет ✨</p>');
   rq.forEach(r=>{const d=dayDate(r[1]);const row=document.createElement("div");row.style.cssText="border-top:1.5px dashed var(--line);margin-top:10px;padding-top:10px";
-    row.innerHTML='<b></b><div class="sub"></div><div class="acts"><button class="btn green">✓ Одобрить</button><button class="btn red">✕ Отклонить</button></div>';
-    row.querySelector("b").textContent=r[3];row.querySelector(".sub").textContent=WD[d.getDay()]+", "+d.getDate()+" "+MG[d.getMonth()]+" · "+rangesText(r[2].split(",").map(Number));
-    const [ok,no]=row.querySelectorAll("button");ok.onclick=()=>{haptic("success");send({a:"cq",id:r[0],ok:1})};no.onclick=()=>{haptic("warning");send({a:"cq",id:r[0],ok:0})};
+    const hs=r[2].split(",").map(Number);
+    row.innerHTML='<b></b><div class="sub"></div>'+(r[4]?'<div class="rqc"></div>':'')+'<div class="acts"><button class="btn green">✓ Одобрить</button><button class="btn red">✕ Отклонить</button></div>';
+    row.querySelector("b").textContent=r[3];row.querySelector(".sub").textContent=WD[d.getDay()]+", "+d.getDate()+" "+MG[d.getMonth()]+" · "+rangesText(hs)+" · "+hs.length+" ч"+(hs.length>2?" ⚠️":"");
+    if(r[4])row.querySelector(".rqc").textContent="💬 "+r[4];
+    const [ok,no]=row.querySelectorAll("button");ok.onclick=()=>{haptic("success");send({a:"cq",id:r[0],ok:1})};no.onclick=()=>rejectSheet(r);
     h.appendChild(row)});
   sec.appendChild(h);
   const t=document.createElement("div");t.className="card";
@@ -614,6 +632,15 @@ function renderAdmin(sec){
     '• Выберите <b>свободные часы</b> — внизу появятся «Записаться», «👤 По нику» и «🚫 Закрыть».<br>'+
     '• Цвета таблицы, бан, рассылка, правила и админы — в чате: «⚙️ Админка» → «🎸 Музклуб».</p>';
   sec.appendChild(t);
+}
+
+function rejectSheet(r){
+  const d=dayDate(r[1]);
+  sheet('<h3>Отклонить заявку</h3><p>'+esc(r[3]+" · "+WD[d.getDay()]+", "+d.getDate()+" "+MG[d.getMonth()]+" · "+rangesText(r[2].split(",").map(Number)))+'</p>'+
+    (r[4]?'<div class="rqc">💬 '+esc(r[4])+'</div>':'')+
+    '<label class="lbl" for="rjR">Причина (придёт человеку: «Ваша запись была отклонена по причине: …»)</label><textarea id="rjR" maxlength="300" placeholder="Например: больше 2 часов без причины"></textarea>'+
+    '<div class="acts"><button class="btn red" id="rjGo">✕ Отклонить</button></div>',
+    ()=>{$("rjGo").onclick=()=>{haptic("warning");send({a:"cq",id:r[0],ok:0,r:$("rjR").value.trim().replace(/\s+/g," ")})}});
 }
 
 /* ---------- кассета: пасхалка ---------- */
