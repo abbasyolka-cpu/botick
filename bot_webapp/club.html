@@ -227,6 +227,9 @@ textarea:focus{outline:none;border-color:var(--org);box-shadow:3px 3px 0 var(--s
 @keyframes cbpop{0%{transform:scale(.7)}60%{transform:scale(1.18)}100%{transform:scale(1)}}
 @keyframes nudge{20%,60%{transform:translateX(-5px)}40%,80%{transform:translateX(5px)}}
 
+.noterow{display:flex;gap:8px;align-items:stretch}
+.noterow input{flex:1;min-width:0}
+.noterow .btn{flex:none;min-width:0;padding:0 14px}
 /* ── вид записи ── */
 .kinds{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
 .kind{padding:11px 12px;border-radius:14px;text-align:left;background:var(--paper);border:1.5px solid var(--edge);transition:border-color .25s,background-color .25s,opacity .25s}
@@ -371,7 +374,7 @@ function myAttention(){let n=0;(D.dy||[]).forEach((dd,i)=>{if(i>=1&&dd.p.include
 /* ---------- экран ---------- */
 function render(){
   const app=$("app");app.textContent="";
-  const T=[["day","Расписание"],["week","Неделя"],["mine",ADM?"Мои":"Мои записи"],["rules","Правила"]];if(ADM)T.push(["adm","⚙"]);
+  const T=[["day","Расписание"]].concat(ADM?[["week","Неделя"]]:[],[["mine",ADM?"Мои":"Мои записи"],["rules","Правила"]]);if(ADM)T.push(["adm","⚙"]);
   const tabs=document.createElement("div");tabs.className="tabs";tabs.setAttribute("role","tablist");
   T.forEach(([k,l])=>{const b=document.createElement("button");b.setAttribute("role","tab");b.setAttribute("aria-selected",String(S.tab===k));b.textContent=l;
     const n=k==="mine"?myAttention():k==="adm"?(D.rq||[]).length:0;
@@ -541,8 +544,34 @@ function openClose(){
       $("crGo").onclick=()=>{haptic("success");send({a:"ccl",d:dkey(S.d),s,e,t:t()})};
       $("crDay").onclick=()=>{haptic("success");send({a:"ccl",d:dkey(S.d),s:D.o,e:D.c,t:t()})}});
 }
+function adminPerm(h,x,pw){
+  /* постоянная запись: выбрать часы → отменить только в этот день или удалить на весь семестр */
+  const d=dayDate(S.d),wdx=(d.getDay()+6)%7,dt=d.getDate()+" "+MG[d.getMonth()];
+  const block=(D.wk||[]).filter(c=>c[0]===wdx&&c[2]===pw[2]&&c[5]===pw[5]&&!c[6]).map(c=>c[1]).sort((a,b)=>a-b);
+  const sel=new Set([h]);
+  sheet('<h3>'+esc(x.who||"Постоянная запись")+'</h3><p>🔁 Постоянная запись: '+esc(WDA[d.getDay()])+' · '+rangesText(block)+'</p>'+
+    '<label class="lbl" for="pmNote">✍️ Подпись постоянника — видят только админы</label><div class="noterow"><input id="pmNote" maxlength="60" placeholder="Например: Петров Пётр, гитара"><button class="btn ink" id="pmNoteGo">Сохранить</button></div>'+
+    '<label class="lbl">Какие часы? (нажмите, чтобы выбрать)</label><div class="chips" id="pmChips"></div>'+
+    '<label class="lbl" for="rsn">Причина — придёт человеку (можно оставить пустым)</label><textarea id="rsn" maxlength="300" placeholder="Например: в это время репетиция к КП"></textarea>'+
+    '<div class="acts"><button class="btn red" id="pmDay">❌ Отменить только '+esc(dt)+'</button><button class="btn red" id="pmSem">🗑 Удалить на весь семестр</button></div>'+
+    '<p>«Только '+esc(dt)+'» — в этот день время освободится, в остальные недели запись останется. «На весь семестр» — выбранные часы больше не будут постоянными'+(x.st==="ext"||x.st==="busy"?'':'; человеку придёт уведомление')+'.</p>',
+    ()=>{const ch=$("pmChips"),day=$("pmDay"),sem=$("pmSem"),nt=$("pmNote");nt.value=pw[7]||"";
+      $("pmNoteGo").onclick=()=>{haptic("success");send({a:"can",wd:wdx,h,t:nt.value.trim().replace(/\s+/g," ")})};
+      const paint=()=>{ch.textContent="";block.forEach(hr=>{const c=document.createElement("button");c.className="chip"+(sel.has(hr)?" on":"");
+          const y=hourInfo(S.d,hr);c.textContent=hh(hr)+(y.rel?" · уже свободно":"");
+          c.onclick=()=>{sel.has(hr)?sel.delete(hr):sel.add(hr);haptic("sel");day.classList.remove("armed");sem.classList.remove("armed");paint()};ch.appendChild(c)});
+        const t=sel.size?" ("+rangesText([...sel])+")":"";day.textContent="❌ Только "+dt+t;sem.textContent="🗑 На весь семестр"+t};
+      paint();
+      const go=(b,act)=>{if(!sel.size){toast("Выберите хотя бы один час");haptic("warning");return}
+        if(!b.classList.contains("armed")){b.classList.add("armed");b.textContent=act==="day"?"Точно отменить "+dt+"?":"Точно удалить на весь семестр?";haptic("warning");return}
+        const r=$("rsn").value.trim().replace(/\s+/g," "),hs=[...sel].sort((a,b)=>a-b);haptic("success");
+        if(act==="day")send({a:"cax",d:dkey(S.d),h:hs[0],hs,r});else send({a:"cpd",wd:wdx,h:hs[0],hs,r})};
+      day.onclick=()=>go(day,"day");sem.onclick=()=>go(sem,"sem")});
+}
 function adminHour(h,x){
   const d=dayDate(S.d),when=WD[d.getDay()]+", "+d.getDate()+" "+MG[d.getMonth()]+" · "+hh(h);
+  {const w0=(d.getDay()+6)%7,p0=(D.wk||[]).find(c=>c[0]===w0&&c[1]===h&&!c[6]);
+   if(p0&&["conf","wait","ext","busy"].includes(x.st)){adminPerm(h,x,p0);return}}
   const rq=x.st==="pend"?(D.rq||[]).find(r=>r[1]===S.d&&r[2].split(",").map(Number).includes(h)):null;
   const can=!!rq||["conf","wait","once","ext","busy"].includes(x.st);
   let body='<h3>'+esc(x.who||"Запись")+'</h3><p>'+esc(when)+' · '+({conf:"придёт ✓",wait:"ещё не ответил(а)",once:"разовая запись",pend:"заявка на рассмотрении",ext:"постоянно (внешники)",busy:"занято по таблице",event:"закрыто"}[x.st]||"")+
