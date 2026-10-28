@@ -293,7 +293,7 @@ textarea:focus{outline:none;border-color:var(--org);box-shadow:3px 3px 0 var(--s
 <body>
 <main class="wrap">
   <button class="cass" id="cass" aria-label="Кассета музклуба">
-    <span class="lab"><b id="cTitle">МУЗКЛУБ</b><i><span class="odo" id="odo" aria-hidden="true"><span>0</span><span>0</span><span>0</span></span><em id="odoCap">часов свободно</em></i><small><svg viewBox="0 0 885 354" aria-label="Логотип студсовета общежитий"><path fill-rule="evenodd" d="M186,0C62,0 0,64 0,177C0,290 62,354 186,354C292,354 356,300 372,226H539V320H627V236L668,320H708L748,236V320H837V226H885V131H722L688,204L655,131H372C356,54 292,0 186,0ZM177,131H199Q233,131 233,165V185Q233,219 199,219H177Q143,219 143,185V165Q143,131 177,131Z"/></svg><span id="stamp">общежития</span></small></span>
+    <span class="lab"><b id="cTitle">МУЗКЛУБ</b><i><span class="odo" id="odo" aria-hidden="true"><span>0</span><span>0</span><span>0</span></span><em id="odoCap">часов свободно</em></i><small><svg viewBox="0 0 885 354" aria-label="Логотип студсовета общежитий"><path fill-rule="evenodd" d="M186,0C62,0 0,64 0,177C0,290 62,354 186,354C292,354 356,300 372,226H539V320H627V236L668,320H708L748,236V320H837V226H885V131H722L688,204L655,131H372C356,54 292,0 186,0ZM177,131H199Q233,131 233,165V185Q233,219 199,219H177Q143,219 143,185V165Q143,131 177,131Z"/></svg><span id="stamp">Студгородок</span></small></span>
     <span class="win"><span class="reel"></span><span class="reel"></span></span>
     <span class="bot"></span>
   </button>
@@ -764,7 +764,7 @@ function weekFree(){let n=0;for(let i=0;i<D.n;i++)if(dayDate(i).getDay()!==0)n+=
 function rollOdo(){const n=weekFree();if(matchMedia("(prefers-reduced-motion:reduce)").matches){setOdo(n);return}
   const t0=performance.now(),dur=900;(function f(t){const k=Math.min(1,(t-t0)/dur),e=1-Math.pow(1-k,3);if(!night)setOdo(Math.round(n*e));if(k<1)requestAnimationFrame(f)})(t0)}
 function paintSide(){const c=$("cass");c.classList.toggle("sb",night);
-  $("cTitle").textContent=night?"ПОСЛЕ ОТБОЯ":"МУЗКЛУБ";$("stamp").textContent=night?"общажный бонус-трек":"общежития · запись";
+  $("cTitle").textContent=night?"ПОСЛЕ ОТБОЯ":"МУЗКЛУБ";$("stamp").textContent=night?"общажный бонус-трек":"Студгородок";
   $("odoCap").textContent=night?"соседи спят":"часов свободно";if(night)setOdo("zzz");else setOdo(weekFree())}
 function beep(seq){
   try{actx=actx||new (window.AudioContext||window.webkitAudioContext)();let t=actx.currentTime;
@@ -792,7 +792,7 @@ function applyTheme(){if(!tg)return;try{tg.ready();tg.expand();tg.disableVertica
   tg.setHeaderColor&&tg.setHeaderColor("#16120F");tg.setBackgroundColor&&tg.setBackgroundColor("#16120F");tg.setBottomBarColor&&tg.setBottomBarColor("#221C17");tg.MainButton&&tg.MainButton.hide()}catch(e){}}
 $("refresh").onclick=()=>{haptic("sel");send({a:"cr"})};
 const ct=D.ct||["@krushich","https://vk.com/krushich"];$("ctNick").textContent=ct[0];$("contact").onclick=()=>{haptic("sel");openLink(ct[1])};
-$("stamp").textContent="общежития · запись";setOdo(0);
+$("stamp").textContent="Студгородок";setOdo(0);
 $("ts").textContent=D.demo?"пример с выдуманными данными":"данные на "+D.ts;
 for(let i=0;i<D.n;i++){if(!(i===0&&D.h>=D.c-1)&&dayDate(i).getDay()!==0){S.d=i;break}}
 applyTheme();
