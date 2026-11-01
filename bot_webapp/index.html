@@ -180,6 +180,15 @@ body[data-room="st"] .empty .mini svg{filter:drop-shadow(0 0 10px rgba(31,216,25
 .bk .w{font-family:var(--display);font-weight:600;font-size:14px}
 .bk .m{font-size:12.5px;color:var(--hint);margin-top:3px}
 .bk .x{border:1px solid var(--line);border-radius:10px;padding:8px 11px;font-size:13px;background:rgba(255,255,255,.05);transition:background .25s,box-shadow .25s}
+.bk .acts{display:flex;flex-direction:column;gap:6px;align-items:stretch}
+.bk .cut{border:1px solid var(--line);border-radius:10px;padding:7px 11px;font-size:12.5px;background:rgba(255,255,255,.05);color:var(--fg)}
+.hrs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:4px}
+.hrs .opt{padding:12px 4px;font-family:var(--mono);font-size:12.5px;font-weight:600}
+.hrs .opt[aria-pressed="true"]{background:rgba(255,59,92,.16);border-color:#FF3B5C;color:#FFC2CF;text-decoration:line-through;box-shadow:0 0 12px rgba(255,59,92,.35)}
+.hrs .opt[disabled]{opacity:.35}
+.cutleft{margin-top:14px;font-size:13.5px;color:var(--hint)}
+.cutleft b{color:var(--fg)}
+.go.danger{background:#FF3B5C;box-shadow:0 0 14px #FF3B5C,0 0 30px rgba(255,59,92,.45);animation:none}
 .bk .x.armed{background:#FF3B5C;border-color:#FF3B5C;color:#fff;box-shadow:0 0 14px #FF3B5C,0 0 30px rgba(255,59,92,.5)}
 .empty{text-align:center;color:var(--hint);padding:34px 14px;border:1px dashed var(--line);border-radius:18px;margin-top:16px;background:var(--surface)}
 .empty .big{font-size:38px;display:block;margin-bottom:8px;filter:drop-shadow(0 0 12px var(--a1))}
@@ -456,6 +465,20 @@ html.boot .wrap{visibility:hidden}
   </div>
 </div>
 
+<div class="flow" id="cut" role="dialog" aria-modal="true" aria-labelledby="cutTitle">
+  <div class="bd" id="cutBd"></div>
+  <div class="card">
+    <div class="grab"></div>
+    <button class="x" id="cutX" aria-label="Закрыть">✕</button>
+    <div class="what" id="cutWhat"></div>
+    <h3 id="cutTitle">Какие часы убрать?</h3>
+    <p>Отметьте часы, которые вам не нужны, — они освободятся для других. Остальная запись сохранится.</p>
+    <div class="hrs" id="cutHrs"></div>
+    <div class="cutleft" id="cutLeft"></div>
+    <div class="btns"><button class="ghost" id="cutBack">Назад</button><button class="go" id="cutGo" disabled>Убрать часы</button></div>
+  </div>
+</div>
+
 <div class="flow" id="adm" role="dialog" aria-modal="true" aria-labelledby="admTitle">
   <div class="bd" id="admBd"></div>
   <div class="card">
@@ -482,8 +505,9 @@ html.boot .wrap{visibility:hidden}
       <li><span><strong>Бронировать помещение нужно заранее - минимум за день.</strong> Если что-то срочное, пиши председателю СтС общежитий: <a href="https://t.me/Yolyich" data-tg>@Yolyich</a>.</span></li>
       <li><span>Комнаты работают каждый день <strong>с 9:00 до 23:00</strong>. К 23:00 помещение должно быть свободно и убрано.</span></li>
       <li><span>Нужно поработать <strong>до 00:00</strong> - договорись об этом с председателем СтС общежитий за день: <a href="https://t.me/Yolyich" data-tg>@Yolyich</a>.</span></li>
-      <li><span>Передумал - отмени запись заранее во вкладке «Мои записи», чтобы время досталось другим.</span></li>
+      <li><span>Передумал - отмени запись заранее во вкладке «Мои записи», чтобы время досталось другим. Если не нужна только часть времени - там же можно убрать лишние часы (кнопка «✂️ Убрать часы»).</span></li>
       <li><span><strong>Делюсь</strong> - вместе с тобой могут работать другие. Будь готов освободить часть места.</span></li>
+      <li><span>В Творческой в одно время может быть <strong>максимум 2 записи</strong> (2 человека или 2 команды) - больше никто присоединиться не сможет.</span></li>
       <li><span><strong>Только моё</strong> - комната твоя, но не бронируй её целиком без реальной необходимости.</span></li>
       <li><span>Не занимай время «про запас»: бронь на всякий случай мешает другим.</span></li>
     </ol></section>
@@ -493,6 +517,8 @@ html.boot .wrap{visibility:hidden}
       <li><span>Если что-то сломалось или закончилось, напиши председателю студсовета.</span></li>
       <li><span>Не выноси общие инструменты и материалы из комнаты без разрешения.</span></li>
       <li><span>Чужие работы и материалы не трогай без разрешения автора.</span></li>
+      <li><span><strong>Если оставляете какой-либо материал или вещи - сообщайте ответственному за Творческую</strong> <a href="https://t.me/Yolyich" data-tg>@Yolyich</a>. В противном случае Творческая ответственности за них не несёт!</span></li>
+      <li><span>Материалы, оставленные с уведомлением ответственного, можно хранить <strong>максимум 10 дней</strong>.</span></li>
     </ol></section>
     <section><h4>Творческая<small>краски и инструменты</small></h4><ol>
       <li><span><strong>Краски - только до 19:00</strong>, при открытых окнах, в перчатках и респираторе.</span></li>
@@ -567,9 +593,11 @@ function hourInfo(r,d,h){
   const over=B.filter(b=>b.r===r&&b.d===d&&b.s<=h&&h<b.e);
   const past=d===0&&h<=D.h;
   const mine=over.find(b=>b.me);
-  let st="free";
-  if(over.length)st=over.some(b=>!b.sh)?"busy":"shared";
-  return{st,over,past,mine,early:d<AD};
+  let st="free",full=false;
+  if(over.length){st=over.some(b=>!b.sh)?"busy":"shared";
+    const cap=(D.cap||[])[r]||0;
+    if(st==="shared"&&cap&&over.length>=cap){st="busy";full=true}}
+  return{st,over,past,mine,full,early:d<AD};
 }
 function freeHours(r,d){let n=0;for(let h=D.o;h<D.c;h++){const x=hourInfo(r,d,h);if(x.st==="free"&&!x.past&&!x.early)n++}return n}
 const EARLY_MSG="Бронь — минимум за день. На сегодня записаться уже нельзя";
@@ -629,7 +657,7 @@ function rangeIssue(s,e){
     if(x.st==="blocked")return hh(h)+" закрыто администратором";
     if(x.past)return"Это время уже прошло";
     if(x.early)return EARLY_MSG;
-    if(x.st==="busy")return hh(h)+" уже занято целиком";
+    if(x.st==="busy")return hh(h)+(x.full?" — мест нет (максимум "+D.cap[S.r]+" записи)":" уже занято целиком");
     if(x.mine)return"В "+hh(h)+" у вас уже есть запись";}
   if(D.mx&&e-s>D.mx)return"Максимум "+D.mx+" ч за одну запись";
   return null;
@@ -641,7 +669,7 @@ function tapHour(h,el){
   if(x.early&&!x.mine&&!x.past){el.classList.remove("shake");void el.offsetWidth;el.classList.add("shake");haptic("warning");toast(EARLY_MSG);return}
   if(x.past||x.st==="busy"||x.mine||x.st==="closed"||x.st==="blocked"){
     el.classList.remove("shake");void el.offsetWidth;el.classList.add("shake");haptic("warning");
-    toast(x.past?"Это время уже прошло":x.mine?"Здесь уже ваша запись":x.st==="blocked"?"Это время закрыто администратором 🚫":"Занято: помещение не делят");return}
+    toast(x.past?"Это время уже прошло":x.mine?"Здесь уже ваша запись":x.st==="blocked"?"Это время закрыто администратором 🚫":x.full?"Мест нет: в Творческой одновременно максимум "+D.cap[S.r]+" записи":"Занято: помещение не делят");return}
   if(S.a===null||S.a!==S.b){S.a=h;S.b=h}            // новый выбор
   else if(h===S.a){S.a=S.b=null}                       // повторный тап — снять
   else{const s=Math.min(S.a,h),e=Math.max(S.a,h)+1,issue=rangeIssue(s,e);
@@ -706,7 +734,7 @@ function renderTimeline(){
     const names=x.over?x.over.map(o=>o.me?"вы":tag(o)):[];
     if(x.mine){b.classList.add("mine");ic.textContent=x.mine.sh?"🤝":"🔒";lb.textContent="ваша запись"+(x.mine.cup?" · 🏆 "+x.mine.cup:"")+(names.length>1?" · ещё "+names.filter(n=>n!=="вы").join(", "):"")}
     else if(x.st==="blocked"){b.classList.add("blocked");ic.textContent="🚫";lb.textContent="закрыто администратором"}
-    else if(x.st==="busy"){b.classList.add("busy");ic.textContent="🔒";lb.textContent=names.join(", ")}
+    else if(x.st==="busy"){b.classList.add("busy");ic.textContent=x.full?"👥":"🔒";lb.textContent=names.join(", ")+(x.full?" · мест нет":"")}
     else if(x.st==="shared"){b.classList.add("shared");ic.textContent="🤝";lb.textContent=names.join(", ")+" · можно присоединиться"}
     else{b.classList.add("free");lb.textContent=x.past?"":x.early?"запись закрыта":"свободно"}
     if(x.past)b.classList.add("past");
@@ -835,7 +863,9 @@ function renderMine(){
   mine.forEach((b,i)=>{
     const r=ROOMS[b.r],d=dayDate(b.d),rel=b.d===0?"Сегодня":b.d===1?"Завтра":WD[d.getDay()].replace(/^./,c=>c.toUpperCase());
     const card=document.createElement("div");card.className="bk";card.dataset.r=r.id;card.style.setProperty("--i",i);
-    card.innerHTML='<div class="em"></div><div><div class="w"></div><div class="m"></div></div><button class="x">Отменить</button>';
+    card.innerHTML='<div class="em"></div><div><div class="w"></div><div class="m"></div></div><div class="acts"><button class="x">Отменить</button></div>';
+    if(cutHours(b).length>1){const c=document.createElement("button");c.className="cut";c.textContent="✂️ Убрать часы";
+      c.onclick=()=>openCut(b);card.querySelector(".acts").prepend(c)}
     card.querySelector(".em").textContent=r.em;
     card.querySelector(".w").textContent=hh(b.s)+"–"+hh(b.e)+" · "+r.name;
     card.querySelector(".m").textContent=rel+", "+d.getDate()+" "+MG[d.getMonth()]+" · "+(b.sh?"🤝 делитесь":"🔒 только вы")+(b.cup?" · 🏆 "+b.cup:"");
@@ -849,6 +879,34 @@ function renderMine(){
   });
   el.appendChild(list);
 }
+/* ---------- убрать часы из своей записи ---------- */
+const C={b:null,drop:new Set()};
+function cutHours(b){const r=[];for(let h=b.s;h<b.e;h++)if(!(b.d===0&&h<=D.h))r.push(h);return r}
+function segs(hs){const out=[];hs.forEach(h=>{const l=out[out.length-1];if(l&&l[1]===h)l[1]=h+1;else out.push([h,h+1])});return out}
+function openCut(b){
+  C.b=b;C.drop=new Set();const r=ROOMS[b.r],d=dayDate(b.d);
+  $("cutWhat").textContent=r.em+" "+r.name+" · "+d.getDate()+" "+MG[d.getMonth()]+" · "+hh(b.s)+"–"+hh(b.e);
+  const g=$("cutHrs");g.textContent="";
+  for(let h=b.s;h<b.e;h++){
+    const o=document.createElement("button");o.className="opt";o.textContent=hh(h)+"–"+hh(h+1);o.setAttribute("aria-pressed","false");
+    if(b.d===0&&h<=D.h){o.disabled=true}
+    else o.onclick=()=>{C.drop.has(h)?C.drop.delete(h):C.drop.add(h);o.setAttribute("aria-pressed",String(C.drop.has(h)));haptic("sel");paintCut()};
+    g.appendChild(o);
+  }
+  paintCut();$("cut").classList.add("on");haptic("sel");
+}
+function paintCut(){
+  const b=C.b,keep=[];for(let h=b.s;h<b.e;h++)if(!C.drop.has(h))keep.push(h);
+  const n=C.drop.size,go=$("cutGo");go.disabled=!n;go.classList.toggle("danger",n>0&&!keep.length);
+  go.textContent=!n?"Убрать часы":!keep.length?"Отменить запись целиком":"Убрать "+n+" ч";
+  $("cutLeft").innerHTML=!n?"":!keep.length?"Вы убираете все часы — запись будет отменена.":
+    "Останется: <b>"+segs(keep).map(a=>hh(a[0])+"–"+hh(a[1])).join(", ")+"</b>"+(segs(keep).length>1?" (запись разделится на две)":"");
+}
+function closeCut(){$("cut").classList.remove("on")}
+$("cutX").onclick=closeCut;$("cutBd").onclick=closeCut;$("cutBack").onclick=closeCut;
+$("cutGo").onclick=()=>{if(!C.b||!C.drop.size)return;haptic("success");
+  send({a:"cut",id:C.b.id,hs:[...C.drop].sort((a,b)=>a-b)});if(!inTg)setTimeout(closeCut,600)};
+
 function render(){
   A.rooms=A.first;A.days=A.first;A.tl=A.first||prev.d!==S.d||(prev.tab!==S.tab&&S.tab==="sched");
   A.mine=prev.tab!==S.tab&&S.tab==="mine";
