@@ -507,7 +507,7 @@ html.boot .wrap{visibility:hidden}
       <li><span>Нужно поработать <strong>до 00:00</strong> - договорись об этом с председателем СтС общежитий за день: <a href="https://t.me/Yolyich" data-tg>@Yolyich</a>.</span></li>
       <li><span>Передумал - отмени запись заранее во вкладке «Мои записи», чтобы время досталось другим. Если не нужна только часть времени - там же можно убрать лишние часы (кнопка «✂️ Убрать часы»).</span></li>
       <li><span><strong>Делюсь</strong> - вместе с тобой могут работать другие. Будь готов освободить часть места.</span></li>
-      <li><span>В Творческой в одно время может быть <strong>максимум 2 записи</strong> (2 человека или 2 команды) - больше никто присоединиться не сможет.</span></li>
+      <li><span>В Творческой и в СтСке в одно время может быть <strong>максимум 2 записи</strong> (2 человека или 2 команды) - больше никто присоединиться не сможет.</span></li>
       <li><span><strong>Только моё</strong> - комната твоя, но не бронируй её целиком без реальной необходимости.</span></li>
       <li><span>Не занимай время «про запас»: бронь на всякий случай мешает другим.</span></li>
     </ol></section>
@@ -669,7 +669,7 @@ function tapHour(h,el){
   if(x.early&&!x.mine&&!x.past){el.classList.remove("shake");void el.offsetWidth;el.classList.add("shake");haptic("warning");toast(EARLY_MSG);return}
   if(x.past||x.st==="busy"||x.mine||x.st==="closed"||x.st==="blocked"){
     el.classList.remove("shake");void el.offsetWidth;el.classList.add("shake");haptic("warning");
-    toast(x.past?"Это время уже прошло":x.mine?"Здесь уже ваша запись":x.st==="blocked"?"Это время закрыто администратором 🚫":x.full?"Мест нет: в Творческой одновременно максимум "+D.cap[S.r]+" записи":"Занято: помещение не делят");return}
+    toast(x.past?"Это время уже прошло":x.mine?"Здесь уже ваша запись":x.st==="blocked"?"Это время закрыто администратором 🚫":x.full?"Мест нет: одновременно максимум "+D.cap[S.r]+" записи":"Занято: помещение не делят");return}
   if(S.a===null||S.a!==S.b){S.a=h;S.b=h}            // новый выбор
   else if(h===S.a){S.a=S.b=null}                       // повторный тап — снять
   else{const s=Math.min(S.a,h),e=Math.max(S.a,h)+1,issue=rangeIssue(s,e);
